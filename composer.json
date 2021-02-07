@@ -1,0 +1,65 @@
+{
+  "name": "fast_dog/adm",
+  "description": "Integration red pkg for Laravel framework",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "Laravel",
+    "Admin Interface"
+  ],
+  "authors": [
+    {
+      "name": "dg482",
+      "email": "d.g.dev482@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "fideloper/proxy": "^4.4",
+    "fruitcake/laravel-cors": "^2.0",
+    "guzzlehttp/guzzle": "^7.0.1",
+    "laravel/framework": "^8.12",
+    "doctrine/dbal": "^2.12.1",
+    "tymon/jwt-auth": "^1.0",
+    "dg482/red": "@dev"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.9@dev",
+    "mockery/mockery": "^1.0@dev",
+    "phpunit/phpunit": "^7.4@dev",
+    "squizlabs/php_codesniffer": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "FastDog\\Adm\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FastDog\\Adm\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "scripts": {
+    "phpcs": "vendor/bin/phpcs -p --standard=psr2 ./src",
+    "phpcst": "vendor/bin/phpcs -p --standard=psr2 ./tests",
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+    "post-root-package-install": [
+      "@php artisan vendor:publish --provider=\"Tymon\\JWTAuth\\Providers\\LaravelServiceProvider\"",
+      "@php artisan jwt:secret"
+    ]
+  },
+  "extra": {
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:dg482/red.git"
+    }
+  ]
+}

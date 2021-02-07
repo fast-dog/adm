@@ -1,0 +1,34 @@
+codecov:
+  token: 9ecb00f4-fef0-4acf-9855-c69cfb589e03
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project:
+      default:
+        # basic
+        target: auto
+        threshold: 0%
+        base: auto
+        flags:
+          - unit
+        paths:
+          - "src"
+    patch:
+      default:
+        target: 80%
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default
+  require_changes: false

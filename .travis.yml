@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - 7.4.12
+
+before_script:
+  - composer install
+  - composer dump-autoload
+
+script:
+  - vendor/bin/phpcs -p --standard=psr2 ./src
+  - vendor/bin/phpcs -p --standard=psr2 ./tests
+  - vendor/bin/phpunit --coverage-clover coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
