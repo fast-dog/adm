@@ -10,4 +10,9 @@ class ExampleTest extends TestCase
     {
         parent::setUp();
     }
+
+    public function testTrue()
+    {
+        $this->assertTrue(1 === 1);
+    }
 }

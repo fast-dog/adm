@@ -15,7 +15,7 @@ use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 class AdmServiceProvider extends LaravelServiceProvider
 {
     /** @var string  */
-    const NAME = 'adm';
+    public const NAME = 'adm';
 
     /**
      *
