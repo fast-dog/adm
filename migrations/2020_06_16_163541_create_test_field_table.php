@@ -27,19 +27,15 @@ class CreateTestFieldTable extends Migration
             $table->double('double_amount', 8, 2);
             $table->enum('level', ['easy', 'hard']);
             $table->float('float_amount', 8, 2);
-
             $table->integer('integer_votes');
             $table->ipAddress('visitor');
             $table->json('options');
             $table->jsonb('jsonb_options');
-            $table->lineString('positions');
+//            $table->lineString('positions');
             $table->longText('description');
             $table->macAddress('device');
             $table->mediumInteger('mediumInteger_votes');
             $table->mediumText('mediumText_description');
-
-
-
 //            $table->set('flavors', ['strawberry', 'vanilla']);
 //            $table->smallIncrements('smallIncrements_id');
             $table->smallInteger('smallInteger_votes');
@@ -48,12 +44,11 @@ class CreateTestFieldTable extends Migration
             $table->time('time_sunrise', 0);
             $table->timeTz('timeTz_sunrise', 0);
             $table->timestampTz('added_on', 0);
-
 //            $table->tinyIncrements('tinyIncrements_id');
-            $table->tinyInteger('tinyIntegervotes');
+            $table->tinyInteger('tinyIntegerVotes');
             $table->unsignedBigInteger('unsignedBigInteger_votes');
             $table->unsignedDecimal('amount', 8, 2);
-            $table->unsignedInteger('unsignedIntegervotes');
+            $table->unsignedInteger('unsignedIntegerVotes');
             $table->unsignedMediumInteger('unsignedMediumInteger_votes');
             $table->unsignedSmallInteger('unsignedSmallInteger_votes');
             $table->unsignedTinyInteger('unsignedTinyInteger_votes');
