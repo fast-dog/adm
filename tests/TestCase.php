@@ -2,9 +2,46 @@
 
 namespace FastDog\Adm\Tests;
 
-use PHPUnit\Framework\TestCase as TestCaseUnit;
+use FastDog\Adm\AdmServiceProvider;
 
-class TestCase extends TestCaseUnit
+/**
+ * Class TestCase
+ * @package FastDog\Adm\Tests
+ */
+abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
 
+    /**
+     * Define environment setup.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return void
+     */
+    protected function defineEnvironment($app)
+    {
+        $app['config']->set('database.default', 'testing');
+    }
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->artisan('migrate', ['--database' => 'testing']);
+    }
+
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return array
+     */
+    protected function getPackageProviders($app)
+    {
+        return [AdmServiceProvider::class];
+    }
 }

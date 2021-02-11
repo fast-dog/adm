@@ -1,30 +1,29 @@
 <?php
 
-namespace FastDog\Adm\Resources\User;
+namespace FastDog\Adm\Resources\Test;
 
+use Dg482\Red\Builders\Form;
 use Dg482\Red\Resource\Resource;
 
 /**
- * Class UserResource
- * @package App\Resources
+ * Class FieldsResource
+ * @package FastDog\Adm\Resources\Test
  */
-class UserResource extends Resource
+class FieldsResource extends Resource
 {
+
     /** @var string */
-    protected string $title = 'Пользователи';
+    protected string $title = 'Тестовые поля UI';
 
     /**
-     * Отношения к профилю и файлам пользователя
      * @var string[]
      */
     protected array $relations = [
-//        'profile' => UserProfileResource::class,
-//        'files' => UserFilesResource::class,
+
     ];
 
     /** @var array */
     protected array $validators = [
-        'email' => ['required', 'email', 'max:50'],
     ];
 
     /**
@@ -32,12 +31,6 @@ class UserResource extends Resource
      * @var string[]
      */
     protected array $hidden_fields = [
-        'email_verified_at',
-        'verify_token',
-        'remember_token',
-        'online_at',
-        'created_at',
-        'updated_at',
     ];
 
     /**
@@ -45,10 +38,6 @@ class UserResource extends Resource
      * @var string[]
      */
     protected array $labels = [
-        'email' => 'Email',
-        'name' => 'Имя',
-        'status' => 'Статус',
-        'role' => 'Привилегии',
     ];
 
     /**
@@ -57,7 +46,7 @@ class UserResource extends Resource
      */
     public function initResource(string $context = ''): Resource
     {
-        $this->setContext(__CLASS__);
+        $this->setContext(Form::class);
 
         return $this;
     }
@@ -66,7 +55,7 @@ class UserResource extends Resource
      * @param $paginator
      * @return array
      */
-    protected function getPagination($paginator)
+    protected function getPagination($paginator): array
     {
         return [
             'total' => $paginator->total(),
