@@ -2,11 +2,16 @@
 
 namespace FastDog\Adm\Tests\Feature;
 
+use FastDog\Adm\Resources\Test\Fields;
+
 use FastDog\Adm\Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ExampleTest extends TestCase
 {
-    public function setUp()
+    use DatabaseMigrations;
+
+    public function setUp():void
     {
         parent::setUp();
     }

@@ -2,9 +2,7 @@
 
 namespace FastDog\Adm\Tests;
 
-use PHPUnit\Framework\TestCase as TestCaseUnit;
-
-class TestCase extends TestCaseUnit
+abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
 
 }
