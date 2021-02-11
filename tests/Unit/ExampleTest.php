@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace FastDog\Adm\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
