@@ -136,7 +136,7 @@ class EloquentAdapter extends DBAdapter
                 $result[$column] = [
                     'id' => $column,
                     'table' => $table,
-                    'type' => $builder->getColumnType($table, $column),// 1.4 get column type
+                    'type' => 'AdmField'.$builder->getColumnType($table, $column),// 1.4 get column type
                 ];
             }
         }, $cache->withCache('schema-'.$table, function () use ($builder, $table) {
@@ -172,10 +172,15 @@ class EloquentAdapter extends DBAdapter
      */
     public function getTableField(array $columnMeta): Field
     {
-        $fieldAlias = ucfirst($columnMeta['type']).'Field';
-
-        /** @var Field $field */
-        $field = app()->make($fieldAlias);
+        if (app()->has($columnMeta['type'])) {
+            /** @var Field $field */
+            $field = app()->make($columnMeta['type']);
+        } else {
+            $field = app()->make('AdmFieldString');
+            $field->setRequired()->setErrorMessages([
+                'required' => 'Field :'.$columnMeta['type'].' not defined.',
+            ]);
+        }
 
         return $field;
     }
