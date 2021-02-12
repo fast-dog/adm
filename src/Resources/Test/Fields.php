@@ -14,7 +14,6 @@ class Fields extends Model implements RedModel
     /** @var string  */
     public $table = 'test_field';
 
-
     /**
      * @return array
      */

@@ -3,8 +3,11 @@
 namespace FastDog\Adm;
 
 use Dg482\Red\Adapters\Adapter;
+use Dg482\Red\Builders\Form;
+use Dg482\Red\Builders\Form\Fields\Field;
 use FastDog\Adm\Adapters\EloquentAdapter;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Illuminate\Support\Str;
 
 /**
  * Class AdmServiceProvider
@@ -14,7 +17,7 @@ use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
  */
 class AdmServiceProvider extends LaravelServiceProvider
 {
-    /** @var string  */
+    /** @var string */
     public const NAME = 'adm';
 
     /**
@@ -48,8 +51,18 @@ class AdmServiceProvider extends LaravelServiceProvider
 
         ]);
 
-        app()->singleton(Adapter::class, function () {
-            return new EloquentAdapter(request());
+        $adapter = new EloquentAdapter(request());
+
+        // 1.1 register singleton db adapter
+        $this->app->singleton(Adapter::class, function () use ($adapter) {
+            return $adapter;
+        });
+
+        // 1.2 binding fields
+        collect($adapter->getTypeFields())->each(function ($class, $id) {
+            $this->app->bind('AdmField'.Str::ucfirst($id), function () use ($class) {
+                return new $class;
+            });
         });
     }
 
