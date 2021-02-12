@@ -41,6 +41,5 @@ class ExampleTest extends TestCase
         $this->assertInstanceOf(EloquentAdapter::class, $resource->getAdapter());
 
         $resource->fields();
-
     }
 }
