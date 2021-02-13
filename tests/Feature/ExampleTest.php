@@ -19,6 +19,9 @@ class ExampleTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /** @var FieldsResource */
+    protected FieldsResource $resource;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -31,15 +34,17 @@ class ExampleTest extends TestCase
         $this->assertTrue(Schema::hasTable('test_field'));
 
         /** @var FieldsResource $resource */
-        $resource = $this->app->get(FieldsResource::class);
+        $this->resource = $this->app->get(FieldsResource::class);
 
         /** @var FieldsForm $form */
         $form = $this->app->get(FieldsForm::class);
 
-        $resource->setForm($form);
+        $this->resource->setForm($form);
 
-        $this->assertInstanceOf(EloquentAdapter::class, $resource->getAdapter());
+        $this->assertInstanceOf(EloquentAdapter::class, $this->resource->getAdapter());
 
-        $resource->fields();
+        $fields = $this->resource->fields();
+
+        $this->assertCount(36, $fields);
     }
 }
