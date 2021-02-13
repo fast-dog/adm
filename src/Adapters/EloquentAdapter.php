@@ -182,6 +182,8 @@ class EloquentAdapter extends DBAdapter
             ]);
         }
 
+        $field->setField($columnMeta['id']);
+
         return $field;
     }
 }
