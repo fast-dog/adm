@@ -189,4 +189,15 @@ class EloquentAdapter extends DBAdapter
 
         return $field;
     }
+
+    /**
+     * @param  int  $limit
+     * @return array
+     */
+    public function read($limit = 1): array
+    {
+        $result = [];
+
+        return $result;
+    }
 }
