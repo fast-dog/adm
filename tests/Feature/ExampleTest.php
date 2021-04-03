@@ -2,6 +2,7 @@
 
 namespace FastDog\Adm\Tests\Feature;
 
+use Dg482\Red\Builders\Form\Fields\Field;
 use FastDog\Adm\Adapters\EloquentAdapter;
 use FastDog\Adm\Resources\Test\Fields;
 use FastDog\Adm\Resources\Test\FieldsForm;

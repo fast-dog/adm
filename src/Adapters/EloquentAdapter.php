@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Str;
 
 /**
  * Class EloquentAdapter
@@ -136,7 +137,7 @@ class EloquentAdapter extends DBAdapter
                 $result[$column] = [
                     'id' => $column,
                     'table' => $table,
-                    'type' => 'AdmField'.$builder->getColumnType($table, $column),// 1.4 get column type
+                    'type' => 'AdmField'.Str::ucfirst($builder->getColumnType($table, $column)),// 1.4 get column type
                 ];
             }
         }, $cache->withCache('schema-'.$table, function () use ($builder, $table) {
@@ -166,6 +167,8 @@ class EloquentAdapter extends DBAdapter
     }
 
     /**
+     * Получение поля
+     *
      * @param  array  $columnMeta
      * @return Field
      * @throws BindingResolutionException
