@@ -70,29 +70,6 @@ class EloquentAdapter extends DBAdapter
     }
 
     /**
-     * @return bool
-     */
-    public function readCmd(): bool
-    {
-        /** @var Read $cmd */
-        $cmd = $this->getCommand();
-
-        if (false === $cmd->isMultiple()) {
-            $result = $this->model::where(function (Builder $query) {
-                $this->where($query);
-            })->first();
-        } else {
-            $result = $this->model::where(function (Builder $query) {
-                $this->where($query);
-            })->paginate($cmd->getPerPage());
-        }
-
-        $cmd->setResult($result);
-
-        return true;
-    }
-
-    /**
      * @param  Builder  $query
      * @return Builder
      */
@@ -188,5 +165,31 @@ class EloquentAdapter extends DBAdapter
         $field->setField($columnMeta['id']);
 
         return $field;
+    }
+
+    /**
+     * @param  int  $limit
+     * @return array
+     */
+    public function read($limit = 1): array
+    {
+        $result = [];
+        /** @var Read $cmd */
+        $cmd = $this->getCommand();
+        $cmd->setMultiple($limit > 1);
+
+        if (false === $cmd->isMultiple()) {
+            $result = $this->model::where(function (Builder $query) {
+                $this->where($query);
+            })->first()->toArray();
+        } else {
+            $result = $this->model::where(function (Builder $query) {
+                $this->where($query);
+            })->paginate($cmd->getPerPage())->toArray();
+        }
+
+        $cmd->setResult($result);
+
+        return $result;
     }
 }

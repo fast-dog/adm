@@ -11,8 +11,10 @@ use Dg482\Red\Model as RedModel;
  */
 class Fields extends Model implements RedModel
 {
-    /** @var string  */
+    /** @var string */
     public $table = 'test_field';
+
+    protected $fillable = ['name'];
 
     /**
      * @return array
@@ -20,14 +22,5 @@ class Fields extends Model implements RedModel
     public function getFields(): array
     {
         return $this->fillable;
-    }
-
-    /**
-     * @param  array  $request
-     * @return RedModel
-     */
-    public function create(array $request): RedModel
-    {
-        return $this;
     }
 }
