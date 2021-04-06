@@ -2,7 +2,6 @@
 
 namespace FastDog\Adm\Resources\User\Forms;
 
-
 use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Builders\Form\FormModelInterface;
 use Dg482\Red\Builders\Form\Structure\Fieldset;

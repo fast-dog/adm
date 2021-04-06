@@ -68,7 +68,6 @@ class AdmServiceProvider extends LaravelServiceProvider
 
         if (is_dir(app_path('Resources'))) {
             array_map(function (string $directory) {
-
             }, app()->get(Filesystem::class)->directories(app_path('Resources')));
         }
     }
