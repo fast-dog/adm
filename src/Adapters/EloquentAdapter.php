@@ -174,6 +174,7 @@ class EloquentAdapter extends DBAdapter
     public function read($limit = 1): array
     {
         $result = [];
+
         /** @var Read $cmd */
         $cmd = $this->getCommand();
         $cmd->setMultiple($limit > 1);
