@@ -16,13 +16,14 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
+    "dg482/red": "@dev",
+    "doctrine/dbal": "^2.12.1",
     "fideloper/proxy": "^4.4",
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^7.0.1",
     "laravel/framework": "^8.12",
-    "doctrine/dbal": "^2.12.1",
-    "tymon/jwt-auth": "^1.0",
-    "dg482/red": "@dev"
+    "spatie/laravel-permission": "^4.0",
+    "tymon/jwt-auth": "^1.0"
   },
   "require-dev": {
     "fzaninotto/faker": "^1.9@dev",

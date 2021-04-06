@@ -6,6 +6,7 @@ use Dg482\Red\Adapters\Adapter;
 use Dg482\Red\Builders\Form;
 use Dg482\Red\Builders\Form\Fields\Field;
 use FastDog\Adm\Adapters\EloquentAdapter;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 use Illuminate\Support\Str;
 
@@ -64,6 +65,11 @@ class AdmServiceProvider extends LaravelServiceProvider
                 return new $class;
             });
         });
+
+        if (is_dir(app_path('Resources'))) {
+            array_map(function (string $directory) {
+            }, app()->get(Filesystem::class)->directories(app_path('Resources')));
+        }
     }
 
     /**
@@ -84,7 +90,9 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     public function provides(): array
     {
-        return [];
+        return [
+            \Spatie\Permission\PermissionServiceProvider::class,
+        ];
     }
 
     /**

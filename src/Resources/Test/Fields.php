@@ -14,6 +14,7 @@ class Fields extends Model implements RedModel
     /** @var string */
     public $table = 'test_field';
 
+    /** @var string[] */
     protected $fillable = ['name'];
 
     /**
@@ -22,5 +23,15 @@ class Fields extends Model implements RedModel
     public function getFields(): array
     {
         return $this->fillable;
+    }
+
+    /**
+     * @param  array  $attributes
+     * @param  array  $options
+     * @return bool
+     */
+    public function updateModel(array $attributes, array $options = [])
+    {
+        return $this->update($attributes, $options);
     }
 }
