@@ -66,7 +66,7 @@ class UserResource extends Resource
      * @param $paginator
      * @return array
      */
-    protected function getPagination($paginator)
+    protected function getPagination($paginator): array
     {
         return [
             'total' => $paginator->total(),
