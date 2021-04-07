@@ -3,13 +3,11 @@
 namespace FastDog\Adm\Tests\Feature;
 
 use FastDog\Adm\Adapters\EloquentAdapter;
-use FastDog\Adm\Resources\Test\Fields;
-use FastDog\Adm\Resources\Test\FieldsForm;
-use FastDog\Adm\Resources\Test\FieldsResource;
+use FastDog\Adm\Resources\Fields\Fields;
+use FastDog\Adm\Resources\Fields\FieldsForm;
+use FastDog\Adm\Resources\Fields\FieldsResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -28,6 +26,8 @@ class TableTest extends TestCase
         parent::setUp();
 
         $this->loadMigrationsFrom(__DIR__.'../../migrations');
+
+         $this->runDatabaseMigrations();
 
         /** @var FieldsResource $resource */
         $this->resource = $this->app->get(FieldsResource::class);

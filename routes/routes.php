@@ -19,7 +19,4 @@ Route::get('/resources/{id?}', function ($id, UserResource $userResource, Identi
 
     $userResource->setForm($identity);
 
-    dump($userResource->fields());
-
-    return view('welcome');
 })->where('id', '[0-9]+');

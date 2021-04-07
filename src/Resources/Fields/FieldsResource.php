@@ -1,6 +1,6 @@
 <?php
 
-namespace FastDog\Adm\Resources\Test;
+namespace FastDog\Adm\Resources\Fields;
 
 use Dg482\Red\Builders\Form;
 use Dg482\Red\Resource\Resource;
