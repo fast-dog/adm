@@ -30,7 +30,7 @@ class Fields extends Model implements RedModel
      * @param  array  $options
      * @return bool
      */
-    public function updateModel(array $attributes, array $options = [])
+    public function updateModel(array $attributes, array $options = []): bool
     {
         return $this->update($attributes, $options);
     }
