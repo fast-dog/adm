@@ -15,6 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements Model
 {
     use HasFactory, Notifiable, HasRoles;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -59,8 +60,19 @@ class User extends Authenticatable implements Model
      * @param  array  $options
      * @return bool
      */
-    public function updateModel(array $attributes, array $options = [])
+    public function updateModel(array $attributes, array $options = []): bool
     {
         return $this->update($attributes, $options);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPermissionResource(): array
+    {
+        $permission = [];
+
+
+        return $permission;
     }
 }

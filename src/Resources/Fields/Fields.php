@@ -1,6 +1,6 @@
 <?php
 
-namespace FastDog\Adm\Resources\Test;
+namespace FastDog\Adm\Resources\Fields;
 
 use Illuminate\Database\Eloquent\Model;
 use Dg482\Red\Model as RedModel;

@@ -5,8 +5,11 @@ namespace FastDog\Adm;
 use Dg482\Red\Adapters\Adapter;
 use Dg482\Red\Builders\Form;
 use Dg482\Red\Builders\Form\Fields\Field;
+use Dg482\Red\Resource\Resource;
 use FastDog\Adm\Adapters\EloquentAdapter;
+use Illuminate\Cache\CacheManager;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 use Illuminate\Support\Str;
 
@@ -33,6 +36,7 @@ class AdmServiceProvider extends LaravelServiceProvider
      * Bootstrap the application events.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function boot(): void
     {
@@ -52,7 +56,7 @@ class AdmServiceProvider extends LaravelServiceProvider
 
         ]);
 
-        $adapter = new EloquentAdapter(request());
+        $adapter = app()->make(EloquentAdapter::class);
 
         // 1.1 register singleton db adapter
         $this->app->singleton(Adapter::class, function () use ($adapter) {
@@ -66,11 +70,57 @@ class AdmServiceProvider extends LaravelServiceProvider
             });
         });
 
-        if (is_dir(app_path('Resources'))) {
-            array_map(function (string $directory) {
-            }, app()->get(Filesystem::class)->directories(app_path('Resources')));
+
+        /** @var CacheManager $cache */
+        $cache = app()->get('cache');
+        // 1.3 init resources
+        $resources = $cache->getStore()->get('FastDogAdmResources');
+        if (null === $resources) {
+            $resources = [];
+            /** @var Filesystem $filesystem */
+            $filesystem = app()->get(Filesystem::class);
+            // 1.3.1 default resources
+            if (is_dir(__DIR__.'/Resources')) {
+                array_map(function (string $directory) use (&$resources) {
+                    array_push($resources, [
+                        'namespace' => 'FastDog\\Adm\\Resources\\',
+                        'idx' => Arr::last(explode('/', $directory)),
+                    ]);
+                }, $filesystem->directories(__DIR__.'/Resources'));
+            }
+
+            // 1.3.2 app resources
+            if (is_dir(app_path('Resources'))) {
+                array_map(function (string $directory) use (&$resources) {
+                    array_push($resources, [
+                        'namespace' => 'App\\Resources\\',
+                        'idx' => Arr::last(explode('/', $directory)),
+                    ]);
+                }, $filesystem->directories(app_path('Resources')));
+            }
+            // 1.3.3 cache resource array
+            $cache->getStore()->put('FastDogAdmResources', $resources, config('adm.resource_ttl', 60));
+        }
+
+        // 1.6 include resource
+        array_map(function (array $res) {
+            $this->includeResource($res['namespace'], $res['idx']);
+        }, $resources);
+    }
+
+    /**
+     * @param  string  $namespace
+     * @param  string  $idx
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    private function includeResource(string $namespace, string $idx)
+    {
+        $targetClass = $namespace.$idx.'\\'.$idx.'Resource';
+        if (class_exists($targetClass)) {
+             app()->bind($targetClass);
         }
     }
+
 
     /**
      * Register the service provider.
