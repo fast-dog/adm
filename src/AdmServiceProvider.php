@@ -47,8 +47,8 @@ class AdmServiceProvider extends LaravelServiceProvider
         $this->handleLang();
 
         $this->publishes([
-            __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR =>
-                public_path('vendor/fast_dog/'.self::NAME),
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR =>
+                public_path('vendor/fast_dog/' . self::NAME),
         ], 'public');
 
 
@@ -65,7 +65,7 @@ class AdmServiceProvider extends LaravelServiceProvider
 
         // 1.2 binding fields
         collect($adapter->getTypeFields())->each(function ($class, $id) {
-            $this->app->bind('AdmField'.Str::ucfirst($id), function () use ($class) {
+            $this->app->bind('AdmField' . Str::ucfirst($id), function () use ($class) {
                 return new $class;
             });
         });
@@ -80,13 +80,13 @@ class AdmServiceProvider extends LaravelServiceProvider
             /** @var Filesystem $filesystem */
             $filesystem = app()->get(Filesystem::class);
             // 1.3.1 default resources
-            if (is_dir(__DIR__.'/Resources')) {
+            if (is_dir(__DIR__ . '/Resources')) {
                 array_map(function (string $directory) use (&$resources) {
                     array_push($resources, [
                         'namespace' => 'FastDog\\Adm\\Resources\\',
                         'idx' => Arr::last(explode('/', $directory)),
                     ]);
-                }, $filesystem->directories(__DIR__.'/Resources'));
+                }, $filesystem->directories(__DIR__ . '/Resources'));
             }
 
             // 1.3.2 app resources
@@ -94,7 +94,7 @@ class AdmServiceProvider extends LaravelServiceProvider
                 array_map(function (string $directory) use (&$resources) {
                     array_push($resources, [
                         'namespace' => 'App\\Resources\\',
-                        'idx' => Arr::last(explode('/', $directory)),
+                        'idx' => Arr::last(explode('/', $directory)) . 'Resource',
                     ]);
                 }, $filesystem->directories(app_path('Resources')));
             }
@@ -109,15 +109,15 @@ class AdmServiceProvider extends LaravelServiceProvider
     }
 
     /**
-     * @param  string  $namespace
-     * @param  string  $idx
+     * @param string $namespace
+     * @param string $idx
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     private function includeResource(string $namespace, string $idx)
     {
-        $targetClass = $namespace.$idx.'\\'.$idx.'Resource';
+        $targetClass = $namespace . $idx . '\\' . $idx . 'Resource';
         if (class_exists($targetClass)) {
-             app()->bind($targetClass);
+            app()->bind($idx . 'Resource', $targetClass);
         }
     }
 
@@ -150,8 +150,8 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleConfigs(): void
     {
-        $configPath = __DIR__.'/../config/'.self::NAME.'.php';
-        $this->publishes([$configPath => config_path(self::NAME.'.php')]);
+        $configPath = __DIR__ . '/../config/' . self::NAME . '.php';
+        $this->publishes([$configPath => config_path(self::NAME . '.php')]);
 
         $this->mergeConfigFrom($configPath, self::NAME);
     }
@@ -161,7 +161,7 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../migrations/');
+        $this->loadMigrationsFrom(__DIR__ . '/../migrations/');
     }
 
 
@@ -170,7 +170,7 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleRoutes(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/routes.php');
     }
 
     /**
@@ -178,11 +178,11 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleViews(): void
     {
-        $path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR;
+        $path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
         $this->loadViewsFrom($path, self::NAME);
 
         $this->publishes([
-            __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR =>
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR =>
                 base_path('resources/views/vendor/fast_dog/'),
         ]);
     }
@@ -192,10 +192,10 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleLang(): void
     {
-        $path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR;
+        $path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
         $this->loadTranslationsFrom($path, self::NAME);
         $this->publishes([
-            $path => resource_path('lang/vendor/fast_dog/'.self::NAME),
+            $path => resource_path('lang/vendor/fast_dog/' . self::NAME),
         ]);
     }
 }

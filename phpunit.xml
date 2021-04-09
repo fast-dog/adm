@@ -21,10 +21,13 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
-        <server name="DB_CONNECTION" value="mysql"/>
+        <server name="DB_CONNECTION" value="sqlite"/>
         <server name="DB_DATABASE" value=":memory:"/>
         <server name="MAIL_MAILER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
+        <server name="APP_DEBUG" value="false"/>
+        <server name="JWT_SECRET" value="b8iDN95odgXu6KD0d9i01lG8Wy7XmBC2RhN4hna2eMW3tFXe0kWnq2czDSiOkP27"/>
     </php>
 </phpunit>

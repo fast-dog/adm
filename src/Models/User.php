@@ -3,9 +3,14 @@
 namespace FastDog\Adm\Models;
 
 use Dg482\Red\Model;
+use Dg482\Red\Resource\Resource;
+use FastDog\Adm\Database\UserFactory;
+use Illuminate\Cache\CacheManager;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -56,8 +61,8 @@ class User extends Authenticatable implements Model
     }
 
     /**
-     * @param  array  $attributes
-     * @param  array  $options
+     * @param array $attributes
+     * @param array $options
      * @return bool
      */
     public function updateModel(array $attributes, array $options = []): bool
@@ -71,8 +76,34 @@ class User extends Authenticatable implements Model
     public function getPermissionResource(): array
     {
         $permission = [];
-
-
+        $defaultActions = [
+            ['action' => 'create', 'defaultCheck' => true, 'describe' => ''],
+            ['action' => 'edit', 'defaultCheck' => true, 'describe' => ''],
+            ['action' => 'update', 'defaultCheck' => true, 'describe' => ''],
+            ['action' => 'delete', 'defaultCheck' => true, 'describe' => '']
+        ];
+        /** @var CacheManager $cache */
+        $cache = app()->get('cache');
+        // 1.3 init resources
+        $resources = $cache->getStore()->get('FastDogAdmResources');
+        if ($resources) {
+            array_map(function (array $resourceData) use (&$permission, $defaultActions) {
+                $id = Str::lower($resourceData['idx']);
+                /** @var Resource $resource */
+                $resource = app()->make($resourceData['idx'] . 'Resource');
+                $permission[] = [
+                    'roleId' => ['user'],
+                    'permissionId' => $id,
+                    'permissionName' => $resource->getTitle(),
+                    'actions' => $defaultActions
+                ];
+            }, $resources);
+        }
         return $permission;
+    }
+
+    protected static function newFactory()
+    {
+        return new UserFactory();
     }
 }
