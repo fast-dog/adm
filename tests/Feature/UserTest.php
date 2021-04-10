@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
  * Class UserTests
  * @package FastDog\Adm\Tests\Feature
  */
-class UserTests extends TestCase
+class UserTest extends TestCase
 {
     use DatabaseMigrations;
 
