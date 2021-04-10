@@ -5,6 +5,7 @@ namespace FastDog\Adm\Models;
 use Dg482\Red\Model;
 use Dg482\Red\Resource\Resource;
 use FastDog\Adm\Database\UserFactory;
+use FastDog\Adm\Events\InitRoles;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -75,37 +76,51 @@ class User extends Authenticatable implements Model
      */
     public function getMe(): array
     {
+        $roles = collect(['user']);
+
+        event(new InitRoles($roles));
+
         return [
             'id' => $this->id,
             'username' => $this->name,
-            'roleId' => ['name']
+            'roleId' => 'user',
+            'role' => $roles->map(function ($role) {
+                return [
+                    'id' => $role,
+                    'creatorId' => 'system',
+                    'status' => 1,
+                    'deleted' => 0,
+                    'permissions' => $this->getPermissionResource($role)
+                ];
+            })
         ];
     }
 
     /**
+     * @param string $role
      * @return array
      * @throws BindingResolutionException
      */
-    public function getPermissionResource(): array
+    public function getPermissionResource(string $role = 'user'): array
     {
         $permission = [];
         $defaultActions = [
-            ['action' => 'create', 'defaultCheck' => true, 'describe' => ''],
-            ['action' => 'edit', 'defaultCheck' => true, 'describe' => ''],
-            ['action' => 'update', 'defaultCheck' => true, 'describe' => ''],
-            ['action' => 'delete', 'defaultCheck' => true, 'describe' => '']
+            ['action' => 'create', 'defaultCheck' => false, 'describe' => ''],
+            ['action' => 'read', 'defaultCheck' => false, 'describe' => ''],
+            ['action' => 'update', 'defaultCheck' => false, 'describe' => ''],
+            ['action' => 'delete', 'defaultCheck' => false, 'describe' => '']
         ];
         /** @var CacheManager $cache */
         $cache = app()->get('cache');
         // 1.3 init resources
         $resources = $cache->getStore()->get('FastDogAdmResources');
         if ($resources) {
-            array_map(function (array $resourceData) use (&$permission, $defaultActions) {
+            array_map(function (array $resourceData) use ($role, &$permission, $defaultActions) {
                 $id = Str::lower($resourceData['idx']);
                 /** @var Resource $resource */
                 $resource = app()->make($resourceData['idx'] . 'Resource');
                 $permission[] = [
-                    'roleId' => ['user'],
+                    'roleId' => $role,
                     'permissionId' => $id,
                     'permissionName' => $resource->getTitle(),
                     'actions' => $defaultActions

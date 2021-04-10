@@ -15,7 +15,7 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
 
     public function __construct(MenuItem &$menuItem)
     {
-        $this->menu = $menuItem;
+        $this->menu = &$menuItem;
     }
 
     /**
