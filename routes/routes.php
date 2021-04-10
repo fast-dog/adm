@@ -1,22 +1,19 @@
 <?php
 
-use FastDog\Adm\Resources\User\Forms\Identity;
-use FastDog\Adm\Resources\User\UserResource;
+use FastDog\Adm\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
+Route::group([
+    'middleware' => ['api', 'auth'],
+    'prefix' => 'api',
+], function () {
 
-//Route::group([
-//    'prefix' => config('adm.admin_path', 'admin'),
-//    'middleware' => ['web'],
-//], function () {
-//    Route::get('/', '\FastDog\Adm\Http\Controllers\AdminController@getIndex');
-//    Route::get('/menu', '\FastDog\Adm\Http\Controllers\AdminController@getMenu');
-//    Route::get('/routes', '\FastDog\Adm\Http\Controllers\AdminController@getInterfaceRoute');
-//});
+    Route::get('user/info', [AdminController::class, 'me']);
+    Route::get('user/nav', [AdminController::class, 'nav']);
 
+    Route::get('/resource/{id?}', function ($id) {
 
-Route::get('/resources/{id?}', function ($id, UserResource $userResource, Identity $identity) {
+//        $userResource->setForm($identity);
 
-    $userResource->setForm($identity);
-
-})->where('id', '[0-9]+');
+    })->where('id', '[0-9]+');
+});

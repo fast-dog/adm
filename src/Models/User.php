@@ -73,6 +73,19 @@ class User extends Authenticatable implements Model
     /**
      * @return array
      */
+    public function getMe(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->name,
+            'roleId' => ['name']
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws BindingResolutionException
+     */
     public function getPermissionResource(): array
     {
         $permission = [];
@@ -102,6 +115,9 @@ class User extends Authenticatable implements Model
         return $permission;
     }
 
+    /**
+     * @return UserFactory
+     */
     protected static function newFactory()
     {
         return new UserFactory();
