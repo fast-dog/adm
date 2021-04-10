@@ -6,6 +6,7 @@ use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class UserTests
@@ -22,7 +23,7 @@ class UserTest extends TestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '../../migrations');
+        $this->loadMigrationsFrom(__DIR__.'../../migrations');
 
         $this->runDatabaseMigrations();
 
@@ -36,11 +37,47 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'name' => 'test',
             'email' => 'adm@test.local',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $permissionDefaultResource = $user->getPermissionResource();
 
         $this->assertCount(2, $permissionDefaultResource);
+    }
+
+    public function testUserInfo()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'name' => 'test',
+            'email' => 'adm@test.local',
+            'password' => 'password',
+        ]);
+
+        Auth::login($user);
+
+        $response = $this->get('/api/user/info');
+
+        $response->assertStatus(200);
+    }
+
+    public function testUserNav()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'name' => 'test',
+            'email' => 'adm@test.local',
+            'password' => 'password',
+        ]);
+
+        Auth::login($user);
+
+        $response = $this->get('/api/user/nav');
+        var_dump($response->getContent());
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            ['component' => 'RouteView', 'title' => 'Администрирование']
+        ]);
     }
 }
