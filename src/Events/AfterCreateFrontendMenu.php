@@ -15,7 +15,7 @@ class AfterCreateFrontendMenu extends BaseEvent
 
     public function __construct(Frontend &$menuItem)
     {
-        $this->menu = $menuItem;
+        $this->menu = &$menuItem;
     }
 
     /**

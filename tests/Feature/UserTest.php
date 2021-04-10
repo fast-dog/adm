@@ -73,7 +73,7 @@ class UserTest extends TestCase
         Auth::login($user);
 
         $response = $this->get('/api/user/nav');
-        var_dump($response->getContent());
+
         $response->assertStatus(200);
 
         $response->assertJson([
