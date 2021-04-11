@@ -83,7 +83,7 @@ class User extends Authenticatable implements Model
         return [
             'id' => $this->id,
             'username' => $this->name,
-            'roleId' => 'user',
+            'roleId' => collect('user'),
             'role' => $roles->map(function ($role) {
                 return [
                     'id' => $role,
