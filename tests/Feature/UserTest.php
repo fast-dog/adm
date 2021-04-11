@@ -77,7 +77,7 @@ class UserTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJson([
-            'result' => [['component' => 'RouteView', 'title' => 'Администрирование']],
+            'result' => [['component' => 'RouteView', 'name' => 'dashboard']],
         ]);
     }
 }
