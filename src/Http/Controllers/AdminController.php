@@ -42,12 +42,21 @@ class AdminController extends BaseController
     {
         /** @var User $user */
         $user = auth()->user();
-
         $result = $user->getMe();
 
-        array_map(function (array $resource) use (&$result) {
-        }, $user->getPermissionResource());
+        $result['role'] = [
+            'roleId' => $result['roleId']->first(),
+            'name' => $user->name,
+            'describe' => '',
+            'status' => 1,
+            'creatorId' => 'system',
+            'deleted' => 0,
+            'permissions' => $result['roleId']->map(function (string $role) use ($user) {
+                return $user->getPermissionResource($role);
+            }),
+        ];
 
+        $result['roleId'] = $result['roleId']->first();
         $result['success'] = true;
 
         return response()->json($result);
@@ -93,6 +102,9 @@ class AdminController extends BaseController
 
         event(new AfterCreateFrontendMenu($frontend));
 
-        return response()->json($frontend->getMenuItems());
+        return response()->json([
+            'success' => true,
+            'result' => $frontend->getMenuItems()
+        ]);
     }
 }
