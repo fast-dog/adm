@@ -70,12 +70,31 @@ class AdminController extends BaseController
     {
         $frontend = new Frontend();
 
+        $dashboard = (new MenuItem)
+            ->setParentId(0)// set zero to parentId for item to push in the root router
+            ->setName('dashboard')
+            ->setTitle('Главная')
+            ->setIcon('dashboard')
+            ->setComponent('RouteView')
+            ->setRedirect('/dashboard/workplace');
+
+        $frontend->setMenu($dashboard);
+
+        $workplace = (new MenuItem)
+            ->setParentId($dashboard->getId()) // set parentId
+            ->setComponent('Workplace')
+            ->setName('workplace')
+            ->setHref('/dashboard/workplace')
+            ->setTitle('Рабочее место');// Vue component
+
+        $frontend->setMenu($workplace);
+
         event(new BeforeGetFrontendMenu($frontend));
 
         $adminMenu = (new MenuItem)
+            ->setName('administration')
             ->setTitle('Администрирование')
-            ->setIcon('setting')
-            ->setRedirect('');
+            ->setIcon('setting');
 
         $resources = $cacheManager->getStore()->get('FastDogAdmResources');
 
