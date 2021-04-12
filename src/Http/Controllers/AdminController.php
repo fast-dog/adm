@@ -9,6 +9,7 @@ use FastDog\Adm\Events\AfterCreateAdministrationMenuItem;
 use FastDog\Adm\Events\AfterCreateFrontendMenu;
 use FastDog\Adm\Events\BeforeCreateAdministrationMenu;
 use FastDog\Adm\Events\BeforeGetFrontendMenu;
+use FastDog\Adm\Events\GetUserInfo;
 use FastDog\Adm\Models\User;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,6 @@ use Illuminate\Support\Str;
  */
 class AdminController extends BaseController
 {
-
     /**
      * AdminController constructor.
      */
@@ -43,6 +43,8 @@ class AdminController extends BaseController
         /** @var User $user */
         $user = auth()->user();
         $result = $user->getMe();
+
+        event(new GetUserInfo($user, $result));
 
         $result['role'] = [
             'roleId' => $result['roleId']->first(),
@@ -123,7 +125,7 @@ class AdminController extends BaseController
 
         return response()->json([
             'success' => true,
-            'result' => $frontend->getMenuItems()
+            'result' => $frontend->getMenuItems(),
         ]);
     }
 }
