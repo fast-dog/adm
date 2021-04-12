@@ -35,7 +35,7 @@ class GetUserInfo
      */
     public function setUser(User &$user): void
     {
-        $this->user = &$user;
+        $this->user = $user;
     }
 
     /**
@@ -49,8 +49,8 @@ class GetUserInfo
     /**
      * @param  array  $result
      */
-    public function setResult(array &$result): void
+    public function setResult(array $result): void
     {
-        $this->result = &$result;
+        $this->result = $result;
     }
 }
