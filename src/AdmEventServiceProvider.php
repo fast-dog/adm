@@ -6,11 +6,13 @@ use FastDog\Adm\Events\AfterCreateAdministrationMenuItem;
 use FastDog\Adm\Events\AfterCreateFrontendMenu;
 use FastDog\Adm\Events\BeforeCreateAdministrationMenu;
 use FastDog\Adm\Events\BeforeGetFrontendMenu;
+use FastDog\Adm\Events\GetUserInfo;
 use FastDog\Adm\Events\InitRoles;
 use FastDog\Adm\Listeners\AfterCreateAdministrationMenuItemListener;
 use FastDog\Adm\Listeners\AfterCreateFrontendMenuListeners;
 use FastDog\Adm\Listeners\BeforeCreateAdministrationMenuListener;
 use FastDog\Adm\Listeners\BeforeGetFrontendMenuListeners;
+use FastDog\Adm\Listeners\GetUserInfoListeners;
 use FastDog\Adm\Listeners\InitRolesListeners;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -39,8 +41,11 @@ class AdmEventServiceProvider extends ServiceProvider
             BeforeGetFrontendMenuListeners::class,
         ],
         InitRoles::class => [
-            InitRolesListeners::class
-        ]
+            InitRolesListeners::class,
+        ],
+        GetUserInfo::class => [
+            GetUserInfoListeners::class,
+        ],
     ];
 
     /**
