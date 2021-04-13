@@ -10,6 +10,8 @@ Route::group([
 
     Route::get('user/info', [AdminController::class, 'me']);
     Route::get('user/nav', [AdminController::class, 'nav']);
+    Route::get('role', [AdminController::class, 'role']);
+
 
     Route::get('/resource/{id?}', function ($id) {
 
