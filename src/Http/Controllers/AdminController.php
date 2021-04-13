@@ -46,6 +46,20 @@ class AdminController extends BaseController
 
         event(new GetUserInfo($user, $result));
 
+        $this->initRole($result);
+
+        return response()->json($result);
+    }
+
+    /**
+     * @param $result
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    private function initRole(&$result)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
         $result['role'] = [
             'roleId' => $result['roleId']->first(),
             'name' => $user->name,
@@ -60,6 +74,19 @@ class AdminController extends BaseController
 
         $result['roleId'] = $result['roleId']->first();
         $result['success'] = true;
+    }
+
+    /**
+     * @return JsonResponse
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function role(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        $result = $user->getMe();
+
+        $this->initRole($result);
 
         return response()->json($result);
     }
