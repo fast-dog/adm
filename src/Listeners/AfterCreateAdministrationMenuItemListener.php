@@ -17,5 +17,8 @@ class AfterCreateAdministrationMenuItemListener
     {
         $menuFrontend = $event->getMenu();
         // add menu item
+
+        $resource = $event->getResources();
+        // change resource list
     }
 }

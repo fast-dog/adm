@@ -13,6 +13,9 @@ class UserResource extends Resource
     /** @var string */
     protected string $title = 'Пользователи';
 
+    /** @var string */
+    protected string $icon = 'team';
+
     /**
      * Отношения к профилю и файлам пользователя
      * @var string[]

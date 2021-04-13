@@ -122,24 +122,35 @@ class AdminController extends BaseController
 
         $adminMenu = (new MenuItem)
             ->setName('administration')
+            ->setParentId(0)// set zero to parentId for item to push in the root router
             ->setTitle('Администрирование')
+            ->setComponent('RouteView')
+            ->setRedirect('resource/builder')
             ->setIcon('setting');
 
         $resources = $cacheManager->getStore()->get('FastDogAdmResources');
 
-        event(new BeforeCreateAdministrationMenu($adminMenu));
+        event(new BeforeCreateAdministrationMenu($adminMenu, $resources));
 
 
-        array_map(function (array $resource) use (&$adminMenu) {
+        array_map(function (array $resource) use (&$adminMenu, &$frontend) {
             /** @var Resource $resourceClass */
             $resourceClass = app()->get($resource['idx'].'Resource');
             if ($resourceClass) {
+                $alias = Str::lower($resource['idx']);
                 $resourceMenu = (new MenuItem)
                     ->setTitle($resourceClass->getTitle())
-                    ->setComponent('/resource/builder')
+                    ->setName($alias)
+                    ->setComponent('resource/builder')// src/view/[resource/builder].vue
+                    ->setIcon($resourceClass->getIcon())
+                    ->setHref('/administration/'.$alias)
                     ->setMeta([
-                        'resource' => Str::lower($resource['idx']),
-                    ]);
+                        'id' => $alias,
+                    ])
+                    ->setParentId($adminMenu->getId());
+
+                $frontend->setMenu($resourceMenu);
+
                 $adminMenu->setChild($resourceMenu);
             }
         }, $resources);
