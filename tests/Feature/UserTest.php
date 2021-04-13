@@ -80,4 +80,25 @@ class UserTest extends TestCase
             'result' => [['component' => 'RouteView', 'name' => 'dashboard']],
         ]);
     }
+
+    public function testUserRole()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'name' => 'test',
+            'email' => 'adm@test.local',
+            'password' => 'password',
+        ]);
+
+        Auth::login($user);
+
+        $response = $this->get('/api/role');
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'roleId' => 'user',
+        ]);
+    }
 }
