@@ -112,11 +112,11 @@ class AdminController extends BaseController
 
         $workplace = (new MenuItem)
             ->setParentId($dashboard->getId()) // set parentId
-            ->setComponent('Workplace')
+            ->setComponent('Workplace')// Vue component
             ->setName('workplace')
             ->setIcon('desktop')
             ->setHref('/dashboard/workplace')
-            ->setTitle(trans('adm::adm.workplace'));// Vue component
+            ->setTitle(trans('adm::adm.workplace'));
 
         $frontend->setMenu($workplace);
 
@@ -128,7 +128,7 @@ class AdminController extends BaseController
             ->setTitle(trans('adm::adm.administration'))
             ->setComponent('RouteView')
             ->setRedirect('resource/builder')
-            ->setIcon('setting');
+            ->setIcon('appstore');
 
         $resources = $cacheManager->getStore()->get('FastDogAdmResources');
 
@@ -159,6 +159,26 @@ class AdminController extends BaseController
         event(new AfterCreateAdministrationMenuItem($frontend, $adminMenu));
 
         $frontend->setMenu($adminMenu);
+
+        $setting = (new MenuItem)
+            ->setName('setting')
+            ->setParentId(0)// set zero to parentId for item to push in the root router
+            ->setTitle(trans('adm::adm.setting'))
+            ->setComponent('RouteView')
+            ->setIcon('setting');
+
+        $frontend->setMenu($setting);
+
+        $userProfile = (new MenuItem)
+            ->setParentId($setting->getId())
+            ->setName('account')
+            ->setParentId(0)// set zero to parentId for item to push in the root router
+            ->setTitle(trans('adm::adm.account'))
+            ->setComponent('account/center')
+            ->setIcon('user');
+
+        $setting->setChild($userProfile);
+        $frontend->setMenu($userProfile);
 
         event(new AfterCreateFrontendMenu($frontend));
 

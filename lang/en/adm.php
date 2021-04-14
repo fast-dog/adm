@@ -4,4 +4,6 @@ return [
     'home' => 'Home',
     'workplace' => 'Workplace',
     'administration' => 'Administration',
+    'setting' => 'Settings',
+    'account' => 'Account',
 ];
