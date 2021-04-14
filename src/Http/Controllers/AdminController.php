@@ -180,6 +180,20 @@ class AdminController extends BaseController
         $setting->setChild($userProfile);
         $frontend->setMenu($userProfile);
 
+        $userProfileSetting = (new MenuItem)
+            ->setParentId($setting->getId())
+            ->setName('account-setting')
+            ->setTitle(trans('adm::adm.account_setting'))
+            ->setParentId(0)// set zero to parentId for item to push in the root router
+            ->setMeta([
+                'show' => false,
+            ])
+            ->setComponent('account/setting')
+            ->setIcon('user');
+
+        $setting->setChild($userProfileSetting);
+        $frontend->setMenu($userProfileSetting);
+
         event(new AfterCreateFrontendMenu($frontend));
 
         return response()->json([
