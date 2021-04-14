@@ -2,6 +2,7 @@
 
 namespace FastDog\Adm\Events;
 
+use Dg482\Red\Builders\Menu\Frontend;
 use Dg482\Red\Builders\Menu\MenuItem;
 
 /**
@@ -13,6 +14,8 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
     /** @var MenuItem */
     private MenuItem $menu;
 
+    private Frontend $root;
+
     /** @var array */
     private array $resources;
 
@@ -21,8 +24,9 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
      * @param  MenuItem  $menuItem
      * @param  array  $resources
      */
-    public function __construct(MenuItem &$menuItem, array &$resources = [])
+    public function __construct(Frontend &$root, MenuItem &$menuItem, array &$resources = [])
     {
+        $this->root = &$root;
         $this->menu = &$menuItem;
         $this->resources = &$resources;
     }
@@ -58,5 +62,21 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
     public function setResources(array $resources): void
     {
         $this->resources = $resources;
+    }
+
+    /**
+     * @return Frontend
+     */
+    public function getRoot(): Frontend
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param  Frontend  $root
+     */
+    public function setRoot(Frontend $root): void
+    {
+        $this->root = $root;
     }
 }

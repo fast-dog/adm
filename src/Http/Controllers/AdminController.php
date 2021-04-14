@@ -130,8 +130,7 @@ class AdminController extends BaseController
 
         $resources = $cacheManager->getStore()->get('FastDogAdmResources');
 
-        event(new BeforeCreateAdministrationMenu($adminMenu, $resources));
-
+        event(new BeforeCreateAdministrationMenu($frontend, $adminMenu, $resources));
 
         array_map(function (array $resource) use (&$adminMenu, &$frontend) {
             /** @var Resource $resourceClass */
@@ -155,7 +154,7 @@ class AdminController extends BaseController
             }
         }, $resources);
 
-        event(new AfterCreateAdministrationMenuItem($adminMenu));
+        event(new AfterCreateAdministrationMenuItem($frontend, $adminMenu));
 
         $frontend->setMenu($adminMenu);
 

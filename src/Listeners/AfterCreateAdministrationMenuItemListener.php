@@ -15,10 +15,16 @@ class AfterCreateAdministrationMenuItemListener
      */
     public function handle(AfterCreateAdministrationMenuItem $event)
     {
-        $menuFrontend = $event->getMenu();
-        // add menu item
+        $root = $event->getRoot();
+        // add to root menu item
+        $event->setRoot($root);
+
+        $menuAdministration = $event->getMenu();
+        // add administration menu item
+        $event->setMenu($menuAdministration);
 
         $resource = $event->getResources();
         // change resource list
+        $event->setResources($resource);
     }
 }
