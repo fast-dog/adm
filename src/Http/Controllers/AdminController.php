@@ -114,6 +114,7 @@ class AdminController extends BaseController
             ->setParentId($dashboard->getId()) // set parentId
             ->setComponent('Workplace')
             ->setName('workplace')
+            ->setIcon('desktop')
             ->setHref('/dashboard/workplace')
             ->setTitle('Рабочее место');// Vue component
 
