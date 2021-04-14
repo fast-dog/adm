@@ -103,7 +103,7 @@ class AdminController extends BaseController
             ->setId(1)
             ->setParentId(0)// set zero to parentId for item to push in the root router
             ->setName('dashboard')
-            ->setTitle('Главная')
+            ->setTitle(trans('adm::adm.home'))
             ->setIcon('dashboard')
             ->setComponent('RouteView')
             ->setRedirect('/dashboard/workplace');
@@ -116,7 +116,7 @@ class AdminController extends BaseController
             ->setName('workplace')
             ->setIcon('desktop')
             ->setHref('/dashboard/workplace')
-            ->setTitle('Рабочее место');// Vue component
+            ->setTitle(trans('adm::adm.workplace'));// Vue component
 
         $frontend->setMenu($workplace);
 
@@ -125,7 +125,7 @@ class AdminController extends BaseController
         $adminMenu = (new MenuItem)
             ->setName('administration')
             ->setParentId(0)// set zero to parentId for item to push in the root router
-            ->setTitle('Администрирование')
+            ->setTitle(trans('adm::adm.administration'))
             ->setComponent('RouteView')
             ->setRedirect('resource/builder')
             ->setIcon('setting');
