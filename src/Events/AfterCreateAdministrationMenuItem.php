@@ -14,6 +14,7 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
     /** @var MenuItem */
     private MenuItem $menu;
 
+    /** @var Frontend  */
     private Frontend $root;
 
     /** @var array */
@@ -21,6 +22,7 @@ class AfterCreateAdministrationMenuItem extends BaseEvent
 
     /**
      * AfterCreateAdministrationMenuItem constructor.
+     * @param  Frontend  $root
      * @param  MenuItem  $menuItem
      * @param  array  $resources
      */

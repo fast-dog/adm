@@ -100,6 +100,7 @@ class AdminController extends BaseController
         $frontend = new Frontend();
 
         $dashboard = (new MenuItem)
+            ->setId(1)
             ->setParentId(0)// set zero to parentId for item to push in the root router
             ->setName('dashboard')
             ->setTitle('Главная')
@@ -113,6 +114,7 @@ class AdminController extends BaseController
             ->setParentId($dashboard->getId()) // set parentId
             ->setComponent('Workplace')
             ->setName('workplace')
+            ->setIcon('desktop')
             ->setHref('/dashboard/workplace')
             ->setTitle('Рабочее место');// Vue component
 
