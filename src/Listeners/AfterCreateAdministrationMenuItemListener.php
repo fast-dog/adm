@@ -17,11 +17,14 @@ class AfterCreateAdministrationMenuItemListener
     {
         $root = $event->getRoot();
         // add to root menu item
+        $event->setRoot($root);
 
-        $menuFrontend = $event->getMenu();
+        $menuAdministration = $event->getMenu();
         // add administration menu item
+        $event->setMenu($menuAdministration);
 
         $resource = $event->getResources();
         // change resource list
+        $event->setResources($resource);
     }
 }
