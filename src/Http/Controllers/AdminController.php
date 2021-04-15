@@ -147,7 +147,7 @@ class AdminController extends BaseController
                     ->setIcon($resourceClass->getIcon())
                     ->setHref('/administration/'.$alias)
                     ->setMeta([
-                        'id' => $alias,
+                        'resource' => $alias,
                     ])
                     ->setParentId($adminMenu->getId());
 
