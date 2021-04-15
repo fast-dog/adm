@@ -3,11 +3,14 @@
 namespace FastDog\Adm\Tests\Feature;
 
 use FastDog\Adm\Adapters\EloquentAdapter;
+use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\Fields\Fields;
 use FastDog\Adm\Resources\Fields\FieldsForm;
 use FastDog\Adm\Resources\Fields\FieldsResource;
+use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -27,7 +30,7 @@ class TableTest extends TestCase
 
         $this->loadMigrationsFrom(__DIR__.'../../migrations');
 
-         $this->runDatabaseMigrations();
+        $this->runDatabaseMigrations();
 
         /** @var FieldsResource $resource */
         $this->resource = $this->app->get(FieldsResource::class);
@@ -84,5 +87,38 @@ class TableTest extends TestCase
 
         $this->assertEquals(1, $records['current_page']);
         $this->assertCount(2, $records['data']);
+    }
+
+
+    public function testUserResource()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'name' => 'test',
+            'email' => 'adm@test.local',
+            'password' => 'password',
+        ]);
+
+        Auth::login($user);
+
+        User::factory(149)->create();
+
+        $response = $this->get('/api/resource?alias=user');
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'table' => [
+                'title' => 'Пользователи',
+                'rowActions' => [
+                    ['id' => 'update'],
+                    ['id' => 'delete'],
+                ],
+                'pagination' => [
+                    'total' => 150,
+                ],
+            ],
+        ]);
     }
 }

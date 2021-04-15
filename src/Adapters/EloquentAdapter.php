@@ -44,6 +44,9 @@ class EloquentAdapter extends DBAdapter
     public function __construct(Request $request)
     {
         $this->request = $request;
+
+        $this->filter = function (Builder $query) {
+        };
     }
 
     /**
@@ -140,6 +143,7 @@ class EloquentAdapter extends DBAdapter
     {
         $this->filter = ($filter instanceof Closure) ? $filter : function () {
         };
+
         return $this;
     }
 
@@ -183,13 +187,15 @@ class EloquentAdapter extends DBAdapter
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
             })->first()->toArray();
+            $cmd->setResult($result);
         } else {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
-            })->paginate($cmd->getPerPage())->toArray();
-        }
+            })->paginate($cmd->getPerPage());
 
-        $cmd->setResult($result);
+            $cmd->setResult($result->items());
+            $result = $result->toArray();
+        }
 
         return $result;
     }

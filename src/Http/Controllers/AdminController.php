@@ -13,6 +13,7 @@ use FastDog\Adm\Events\GetUserInfo;
 use FastDog\Adm\Models\User;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Str;
 
@@ -200,5 +201,30 @@ class AdminController extends BaseController
             'success' => true,
             'result' => $frontend->getMenuItems(),
         ]);
+    }
+
+    /**
+     * @param  Request  $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function resource(Request $request): JsonResponse
+    {
+        $result = [
+            'success' => false,
+        ];
+        $alias = $request->get('alias');
+        if ($alias) {
+            /** @var Resource $resourceClass */
+            $resourceClass = app()->get(Str::ucfirst($alias).'Resource');
+            if ($resourceClass) {
+                $result = [
+                    'success' => true,
+                    'table' => $resourceClass->getTable(),
+                ];
+            }
+        }
+
+        return response()->json($result);
     }
 }

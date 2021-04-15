@@ -13,9 +13,5 @@ Route::group([
     Route::get('role', [AdminController::class, 'role']);
 
 
-    Route::get('/resource/{id?}', function ($id) {
-
-//        $userResource->setForm($identity);
-
-    })->where('id', '[0-9]+');
+    Route::get('/resource', [AdminController::class, 'resource']);
 });

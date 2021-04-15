@@ -137,9 +137,7 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     public function provides(): array
     {
-        return [
-            \Spatie\Permission\PermissionServiceProvider::class,
-        ];
+        return [];
     }
 
     /**
