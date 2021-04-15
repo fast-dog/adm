@@ -47,6 +47,10 @@ class UserResource extends Resource
         'online_at',
         'created_at',
         'updated_at',
+        'two_factor_secret',
+        'current_team_id',
+        'profile_photo_path',
+        'two_factor_recovery_codes'
     ];
 
     /**
