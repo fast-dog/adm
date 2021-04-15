@@ -110,7 +110,6 @@ class TableTest extends TestCase
         $response->assertJson([
             'success' => true,
             'table' => [
-                'title' => 'Пользователи',
                 'rowActions' => [
                     ['id' => 'update'],
                     ['id' => 'delete'],

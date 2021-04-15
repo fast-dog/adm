@@ -3,6 +3,7 @@
 namespace FastDog\Adm\Resources\User\Forms;
 
 use Dg482\Red\Builders\Form\BaseForms;
+use Dg482\Red\Builders\Form\Fields\Field;
 use Dg482\Red\Builders\Form\FormModelInterface;
 use Dg482\Red\Builders\Form\Structure\Fieldset;
 use Exception;
@@ -15,7 +16,7 @@ use FastDog\Adm\Models\User;
 class Identity extends BaseForms implements FormModelInterface
 {
     /** @var string */
-    public string $title = 'Данные пользователя';
+    public string $title = '';
 
     /** @var string */
     protected string $formName = 'user/identity';
@@ -26,6 +27,7 @@ class Identity extends BaseForms implements FormModelInterface
      */
     public function __construct(User $model)
     {
+        $this->setTitle(trans('adm::resources.user.forms.identity.title'));
         $this->setModel($model);
     }
 
@@ -36,7 +38,20 @@ class Identity extends BaseForms implements FormModelInterface
     public function resourceFields(): array
     {
         return [
-            Fieldset::make('Основное', '')->setItems($this->fields()),
+            Fieldset::make(trans('adm::resources.user.forms.identity.general'), '')->setItems($this->fields()),
         ];
+    }
+
+    /**
+     * Password field overwrite method
+     *
+     * @param  Field  $field
+     * @return Field
+     */
+    public function formFieldPassword(Field $field): Field
+    {
+        $field->hideTable();// hide password field in tables
+
+        return $field;
     }
 }
