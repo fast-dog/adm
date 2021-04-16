@@ -156,7 +156,7 @@ class EloquentAdapter extends DBAdapter
      */
     public function getTableField(array $columnMeta): Field
     {
-        if (app()->has($columnMeta['type'])) {
+        if (app()->has($columnMeta['type'])) {// 1.1 init Field
             /** @var Field $field */
             $field = app()->make($columnMeta['type']);
         } else {
@@ -166,7 +166,13 @@ class EloquentAdapter extends DBAdapter
             ]);
         }
 
-        $field->setField($columnMeta['id']);
+        $field->setField($columnMeta['id']);// 1.2 set Field Name
+
+        $result = $this->getCommand()->getResult();// 1.3 get cmd result
+
+        if (!empty($result[$field->getField()])) {
+            $field->setValue($result[$field->getField()]);// 1.4 set Field value
+        }
 
         return $field;
     }

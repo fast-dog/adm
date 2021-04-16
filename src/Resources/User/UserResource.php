@@ -41,6 +41,7 @@ class UserResource extends Resource
      * @var string[]
      */
     protected array $hidden_fields = [
+        'id',
         'email_verified_at',
         'verify_token',
         'remember_token',
