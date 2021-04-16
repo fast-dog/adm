@@ -5,6 +5,7 @@ namespace FastDog\Adm\Http\Controllers;
 use Dg482\Red\Builders\Menu\Frontend;
 use Dg482\Red\Builders\Menu\MenuItem;
 use Dg482\Red\Resource\Resource;
+use Exception;
 use FastDog\Adm\Events\AfterCreateAdministrationMenuItem;
 use FastDog\Adm\Events\AfterCreateFrontendMenu;
 use FastDog\Adm\Events\BeforeCreateAdministrationMenu;
@@ -221,6 +222,31 @@ class AdminController extends BaseController
                 $result = [
                     'success' => true,
                     'table' => $resourceClass->getTable(),
+                ];
+            }
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * @param  Request  $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function resourceForm(Request $request): JsonResponse
+    {
+        $result = [
+            'success' => false,
+        ];
+        $alias = $request->get('alias');
+        if ($alias) {
+            /** @var Resource $resourceClass */
+            $resourceClass = app()->get(Str::ucfirst($alias).'Resource');
+            if ($resourceClass) {
+                $result = [
+                    'success' => true,
+                    'form' => $resourceClass->getForm(),
                 ];
             }
         }

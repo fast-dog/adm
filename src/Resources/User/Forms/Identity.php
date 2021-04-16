@@ -38,7 +38,8 @@ class Identity extends BaseForms implements FormModelInterface
     public function resourceFields(): array
     {
         return [
-            Fieldset::make(trans('adm::resources.user.forms.identity.general'), '')->setItems($this->fields()),
+            Fieldset::make(trans('adm::resources.user.forms.identity.general'), 'general_fieldset')
+                ->setItems($this->fields()),
         ];
     }
 

@@ -14,4 +14,5 @@ Route::group([
 
 
     Route::get('/resource', [AdminController::class, 'resource']);
+    Route::get('/resource/form', [AdminController::class, 'resourceForm']);
 });
