@@ -7,7 +7,6 @@ use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\Fields\Fields;
 use FastDog\Adm\Resources\Fields\FieldsForm;
 use FastDog\Adm\Resources\Fields\FieldsResource;
-use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Auth;
