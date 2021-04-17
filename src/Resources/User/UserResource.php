@@ -95,6 +95,8 @@ class UserResource extends Resource
     }
 
     /**
+     * Return form model
+     *
      * @return BaseForms
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */

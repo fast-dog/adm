@@ -16,12 +16,6 @@ use FastDog\Adm\Models\User;
  */
 class Identity extends BaseForms implements FormModelInterface
 {
-    /** @var string */
-    public string $title = '';
-
-    /** @var string */
-    protected string $formName = 'user/identity';
-
     /**
      * Identity constructor.
      * @param  User  $model
@@ -29,6 +23,7 @@ class Identity extends BaseForms implements FormModelInterface
     public function __construct(User $model)
     {
         $this->setTitle(trans('adm::resources.user.forms.identity.title'));
+        $this->setFormName('user/identity');
         $this->setModel($model);
     }
 
