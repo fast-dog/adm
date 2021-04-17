@@ -4,6 +4,7 @@ namespace FastDog\Adm\Resources\User\Forms;
 
 use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Builders\Form\Fields\Field;
+use Dg482\Red\Builders\Form\Fields\PasswordField;
 use Dg482\Red\Builders\Form\FormModelInterface;
 use Dg482\Red\Builders\Form\Structure\Fieldset;
 use Exception;
@@ -48,11 +49,15 @@ class Identity extends BaseForms implements FormModelInterface
      *
      * @param  Field  $field
      * @return Field
+     * @throws \Dg482\Red\Exceptions\EmptyFieldNameException
      */
     public function formFieldPassword(Field $field): Field
     {
-        $field->hideTable();// hide password field in tables
+        $passwordField = new PasswordField();
+        $passwordField->setField($field->getField());
+        $passwordField->setName($field->getName());
+        $passwordField->hideTable();// hide password field in tables
 
-        return $field;
+        return $passwordField;
     }
 }
