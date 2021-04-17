@@ -5,7 +5,7 @@ namespace FastDog\Adm\Models;
 use Dg482\Red\Model;
 use Dg482\Red\Resource\Resource;
 use FastDog\Adm\Database\UserFactory;
-use FastDog\Adm\Events\InitRoles;
+use FastDog\Adm\Events\User\InitRoles;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

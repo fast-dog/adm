@@ -5,6 +5,8 @@ namespace FastDog\Adm\Resources\User\Forms;
 use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Builders\Form\Structure\Tabs;
 use Exception;
+use FastDog\Adm\Events\User\Profile\CreateProfileTabPersonal;
+use FastDog\Adm\Events\User\Profile\CreateProfileTabs;
 use FastDog\Adm\Models\User;
 
 /**
@@ -15,7 +17,7 @@ class Profile extends BaseForms
 {
     /**
      * Identity constructor.
-     * @param  User  $model
+     * @param User $model
      */
     public function __construct(User $model)
     {
@@ -32,9 +34,18 @@ class Profile extends BaseForms
     {
         $tabs = (new Tabs);
 
-        return [
-            $tabs->pushTab(trans('adm::resources.user.forms.profile.personal.title')),
-            $tabs->pushTab(trans('adm::resources.user.forms.profile.security.title')),
+        event(new CreateProfileTabs($tabs));
+
+        $tabPersonal = $tabs->pushTab(trans('adm::resources.user.forms.profile.personal.title'));
+
+        event(new CreateProfileTabPersonal($tabPersonal));
+
+        $tabSecurity = $tabs->pushTab(trans('adm::resources.user.forms.profile.security.title'));
+
+        $result = [
+            $tabPersonal, $tabSecurity
         ];
+
+        return $result;
     }
 }

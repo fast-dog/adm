@@ -2,7 +2,7 @@
 
 namespace FastDog\Adm\Listeners;
 
-use FastDog\Adm\Events\InitRoles;
+use FastDog\Adm\Events\User\InitRoles;
 
 /**
  * Class InitRolesListeners
@@ -17,5 +17,6 @@ class InitRolesListeners
     {
         $roles = $event->getRoles();
         // add roles to collection
+        $event->setRoles($roles);
     }
 }
