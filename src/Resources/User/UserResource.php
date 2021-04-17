@@ -14,7 +14,7 @@ use FastDog\Adm\Resources\User\Forms\Identity;
 class UserResource extends Resource
 {
     /** @var string */
-    protected string $title = 'Пользователи';
+    protected string $title = '';
 
     /** @var string */
     protected string $icon = 'team';
@@ -58,12 +58,7 @@ class UserResource extends Resource
      * Подписи
      * @var string[]
      */
-    protected array $labels = [
-        'email' => 'Email',
-        'name' => 'Имя',
-        'status' => 'Статус',
-        'role' => 'Привилегии',
-    ];
+    protected array $labels = [];
 
     /**
      * @param  string  $context
@@ -71,6 +66,15 @@ class UserResource extends Resource
      */
     public function initResource(string $context = ''): Resource
     {
+        $this->setTitle(trans('adm::resources.user.title'));
+        $this->setLabels([
+            'email' => trans('adm::resources.user.forms.identity.fields.email'),
+            'name' => trans('adm::resources.user.forms.identity.fields.name'),
+            'status' => trans('adm::resources.user.forms.identity.fields.status'),
+            'role' => trans('adm::resources.user.forms.identity.fields.role'),
+            'password' => trans('adm::resources.user.forms.identity.fields.password'),
+        ]);
+
         $this->setContext(__CLASS__);
 
         return $this;
