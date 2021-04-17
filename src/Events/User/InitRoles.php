@@ -1,7 +1,8 @@
 <?php
 
-namespace FastDog\Adm\Events;
+namespace FastDog\Adm\Events\User;
 
+use FastDog\Adm\Events\BaseEvent;
 use Illuminate\Support\Collection;
 
 /**
@@ -28,5 +29,13 @@ class InitRoles extends BaseEvent
     public function getRoles(): Collection
     {
         return $this->roles;
+    }
+
+    /**
+     * @param Collection $roles
+     */
+    public function setRoles(Collection &$roles): void
+    {
+        $this->roles = &$roles;
     }
 }
