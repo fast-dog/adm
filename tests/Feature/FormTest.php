@@ -44,6 +44,15 @@ class FormTest extends TestCase
             'success' => true,
             'form' => [
                 'form' => 'user/identity',
+                'items' => [
+                    [
+                        'type' => 'fieldset',
+                        'items' => [
+                            'email' => ['type' => 'string'],
+                            'password' => ['type' => 'password'],
+                        ],
+                    ],
+                ],
             ],
         ]);
     }
