@@ -169,7 +169,6 @@ class AdmServiceProvider extends LaravelServiceProvider
     private function handleRoutes(): void
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
-
     }
 
     /**
