@@ -7,6 +7,7 @@ use Dg482\Red\Builders\Form\Structure\Tabs;
 use Exception;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabPersonal;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabs;
+use FastDog\Adm\Events\User\Profile\CreateProfileTabSecurity;
 use FastDog\Adm\Models\User;
 
 /**
@@ -41,6 +42,8 @@ class Profile extends BaseForms
         event(new CreateProfileTabPersonal($tabPersonal));
 
         $tabSecurity = $tabs->pushTab(trans('adm::resources.user.forms.profile.security.title'));
+
+        event(new CreateProfileTabSecurity($tabSecurity));
 
         $result = [
             $tabPersonal, $tabSecurity

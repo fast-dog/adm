@@ -27,7 +27,7 @@ class UserResource extends Resource
      * @var string[]
      */
     protected array $relations = [
-//        'profile' => UserProfileResource::class,
+        'profile' => ProfileResource::class,
 //        'files' => UserFilesResource::class,
     ];
 

@@ -40,7 +40,7 @@ class AdminController extends BaseController
      * @return JsonResponse
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function me(): JsonResponse
+    public function info(): JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();

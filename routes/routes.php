@@ -10,12 +10,14 @@ Route::group([
     'prefix' => 'api',
 ], function () {
 
-    Route::get('user/info', [AdminController::class, 'me']);
-    Route::get('user/nav', [AdminController::class, 'nav']);
+    Route::get('/user/info', [AdminController::class, 'info']);
+    Route::get('/user/nav', [AdminController::class, 'nav']);
+    Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store']);
+    Route::delete('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy']);
     Route::get('/user/two-factor-qr-code', [TwoFactorQrCodeController::class, 'show']);
     Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store']);
 
-    Route::get('role', [AdminController::class, 'role']);
+    Route::get('/role', [AdminController::class, 'role']);
 
 
     Route::get('/resource', [AdminController::class, 'resource']);
