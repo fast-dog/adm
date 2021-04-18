@@ -91,5 +91,25 @@ class UserTest extends TestCase
         $response->assertStatus(302);
 
         $this->assertTrue(session('status') == 'two-factor-authentication-enabled');
+
+        $response = $this->get('/api/user/profile');
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'form' => [
+                'form' => 'user/profile',
+                'items' => [
+                    [
+                        'type' => 'tabs',
+                        'items' => [
+                            ['field' => 'tab-personal'],
+                            ['field' => 'tab-security'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

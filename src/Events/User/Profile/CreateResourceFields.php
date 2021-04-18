@@ -17,7 +17,7 @@ class CreateResourceFields
      */
     public function __construct(array &$tabsResult)
     {
-        $this->tabsResult = $tabsResult;
+        $this->tabsResult = &$tabsResult;
     }
 
     /**
