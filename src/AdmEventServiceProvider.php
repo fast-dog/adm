@@ -11,6 +11,7 @@ use FastDog\Adm\Events\User\InitRoles;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabPersonal;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabs;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabSecurity;
+use FastDog\Adm\Events\User\Profile\CreateResourceFields;
 use FastDog\Adm\Listeners\AfterCreateAdministrationMenuItemListener;
 use FastDog\Adm\Listeners\AfterCreateFrontendMenuListeners;
 use FastDog\Adm\Listeners\BeforeCreateAdministrationMenuListener;
@@ -20,6 +21,7 @@ use FastDog\Adm\Listeners\InitRolesListeners;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabPersonalListener;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabSecurityListeners;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabsListener;
+use FastDog\Adm\Listeners\User\Profile\CreateResourceFieldsListeners;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 /**
@@ -53,14 +55,17 @@ class AdmEventServiceProvider extends ServiceProvider
             GetUserInfoListeners::class,
         ],
         CreateProfileTabs::class => [
-            CreateProfileTabsListener::class
+            CreateProfileTabsListener::class,
         ],
         CreateProfileTabPersonal::class => [
-            CreateProfileTabPersonalListener::class
+            CreateProfileTabPersonalListener::class,
         ],
         CreateProfileTabSecurity::class => [
-            CreateProfileTabSecurityListeners::class
-        ]
+            CreateProfileTabSecurityListeners::class,
+        ],
+        CreateResourceFields::class => [
+            CreateResourceFieldsListeners::class,
+        ],
     ];
 
     /**

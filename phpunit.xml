@@ -29,5 +29,6 @@
         <server name="TELESCOPE_ENABLED" value="false"/>
         <server name="APP_DEBUG" value="true"/>
         <server name="JWT_SECRET" value="b8iDN95odgXu6KD0d9i01lG8Wy7XmBC2RhN4hna2eMW3tFXe0kWnq2czDSiOkP27"/>
+        <server name="APP_KEY" value="base64:riSRZvwlp1XRP6fCcH5AKCnxKDIznfNJU58o3Mfetl8="/>
     </php>
 </phpunit>

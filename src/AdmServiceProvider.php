@@ -43,15 +43,16 @@ class AdmServiceProvider extends LaravelServiceProvider
         $this->handleViews();
         $this->handleLang();
 
-        $this->publishes([
-            __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR =>
-                public_path('vendor/fast_dog/'.self::NAME),
-        ], 'public');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR =>
+                    public_path('vendor/fast_dog/'.self::NAME),
+            ], 'public');
+        }
 
-
-        $this->commands([
-
-        ]);
+//        $this->commands([
+//
+//        ]);
 
         $adapter = app()->make(EloquentAdapter::class);
 
@@ -145,10 +146,12 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleConfigs(): void
     {
-        $configPath = __DIR__.'/../config/'.self::NAME.'.php';
-        $this->publishes([$configPath => config_path(self::NAME.'.php')]);
+        if ($this->app->runningInConsole()) {
+            $configPath = __DIR__.'/../config/'.self::NAME.'.php';
+            $this->publishes([$configPath => config_path(self::NAME.'.php')]);
 
-        $this->mergeConfigFrom($configPath, self::NAME);
+            $this->mergeConfigFrom($configPath, self::NAME);
+        }
     }
 
     /**
@@ -173,13 +176,15 @@ class AdmServiceProvider extends LaravelServiceProvider
      */
     private function handleViews(): void
     {
-        $path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR;
-        $this->loadViewsFrom($path, self::NAME);
+        if ($this->app->runningInConsole()) {
+            $path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR;
+            $this->loadViewsFrom($path, self::NAME);
 
-        $this->publishes([
-            __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR =>
-                base_path('resources/views/vendor/fast_dog/'),
-        ]);
+            $this->publishes([
+                __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR =>
+                    base_path('resources/views/vendor/fast_dog/'),
+            ]);
+        }
     }
 
     /**

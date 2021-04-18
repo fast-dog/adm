@@ -7,6 +7,7 @@ use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\FortifyServiceProvider;
 
 /**
  * Class UserTests
@@ -19,9 +20,14 @@ class UserTest extends TestCase
     /** @var UserResource */
     protected UserResource $resource;
 
+    /** @var User */
+    protected User $user;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        app()->register(FortifyServiceProvider::class);
 
         $this->loadMigrationsFrom(__DIR__.'../../migrations');
 
@@ -29,32 +35,26 @@ class UserTest extends TestCase
 
         /** @var UserResource $resource */
         $this->resource = $this->app->get(UserResource::class);
-    }
 
-    public function testUser()
-    {
         /** @var User $user */
-        $user = User::factory()->create([
+        $this->user = User::factory()->create([
             'name' => 'test',
             'email' => 'adm@test.local',
             'password' => 'password',
         ]);
 
-        $permissionDefaultResource = $user->getPermissionResource();
+        Auth::login($this->user);
+    }
+
+    public function testUser()
+    {
+        $permissionDefaultResource = $this->user->getPermissionResource();
 
         $this->assertCount(2, $permissionDefaultResource);
     }
 
     public function testUserInfo()
     {
-        /** @var User $user */
-        $user = User::factory()->create([
-            'name' => 'test',
-            'email' => 'adm@test.local',
-            'password' => 'password',
-        ]);
-
-        Auth::login($user);
 
         $response = $this->get('/api/user/info');
 
@@ -63,15 +63,6 @@ class UserTest extends TestCase
 
     public function testUserNav()
     {
-        /** @var User $user */
-        $user = User::factory()->create([
-            'name' => 'test',
-            'email' => 'adm@test.local',
-            'password' => 'password',
-        ]);
-
-        Auth::login($user);
-
         $response = $this->get('/api/user/nav');
 
         $response->assertStatus(200);
@@ -83,15 +74,6 @@ class UserTest extends TestCase
 
     public function testUserRole()
     {
-        /** @var User $user */
-        $user = User::factory()->create([
-            'name' => 'test',
-            'email' => 'adm@test.local',
-            'password' => 'password',
-        ]);
-
-        Auth::login($user);
-
         $response = $this->get('/api/role');
 
         $response->assertStatus(200);
@@ -99,6 +81,35 @@ class UserTest extends TestCase
         $response->assertJson([
             'success' => true,
             'roleId' => 'user',
+        ]);
+    }
+
+    public function testProfileForm()
+    {
+        $response = $this->post('/api/user/two-factor-authentication');
+
+        $response->assertStatus(302);
+
+        $this->assertTrue(session('status') == 'two-factor-authentication-enabled');
+
+        $response = $this->get('/api/user/profile');
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'form' => [
+                'form' => 'user/profile',
+                'items' => [
+                    [
+                        'type' => 'tabs',
+                        'items' => [
+                            ['field' => 'tab-personal'],
+                            ['field' => 'tab-security'],
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 }
