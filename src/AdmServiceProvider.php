@@ -92,7 +92,7 @@ class AdmServiceProvider extends LaravelServiceProvider
                 array_map(function (string $directory) use (&$resources) {
                     array_push($resources, [
                         'namespace' => 'App\\Resources\\',
-                        'idx' => Arr::last(explode('/', $directory)).'Resource',
+                        'idx' => Arr::last(explode('/', $directory)),
                     ]);
                 }, $filesystem->directories(app_path('Resources')));
             }
