@@ -3,6 +3,7 @@
 namespace FastDog\Adm\Events\User\Profile;
 
 use Dg482\Red\Builders\Form\Structure\Tabs;
+use FastDog\Adm\Resources\User\Forms\Profile;
 
 /**
  * Class CreateProfileTabs
@@ -13,13 +14,18 @@ class CreateProfileTabs
     /** @var Tabs */
     protected Tabs $tabs;
 
+    /** @var Profile */
+    protected Profile $form;
+
     /**
      * CreateProfileTabs constructor.
-     * @param Tabs $tabs
+     * @param  Tabs  $tabs
+     * @param  Profile  $form
      */
-    public function __construct(Tabs &$tabs)
+    public function __construct(Tabs &$tabs, Profile &$form)
     {
         $this->setTabs($tabs);
+        $this->setForm($form);
     }
 
     /**
@@ -31,10 +37,26 @@ class CreateProfileTabs
     }
 
     /**
-     * @param Tabs $tabs
+     * @param  Tabs  $tabs
      */
     public function setTabs(Tabs &$tabs): void
     {
         $this->tabs = &$tabs;
+    }
+
+    /**
+     * @return Profile
+     */
+    public function getForm(): Profile
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param  Profile  $form
+     */
+    public function setForm(Profile &$form): void
+    {
+        $this->form = &$form;
     }
 }
