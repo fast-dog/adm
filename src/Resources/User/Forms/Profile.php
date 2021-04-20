@@ -36,21 +36,21 @@ class Profile extends BaseForms
     {
         $tabs = (new Tabs)->setField('profile_tabs');
 
-        event(new CreateProfileTabs($tabs));
+        event(new CreateProfileTabs($tabs, $this));
 
         $tabPersonal = $tabs->pushTab(trans('adm::resources.user.forms.profile.personal.title'));
         $tabPersonal->setField('tab-personal');
 
-        event(new CreateProfileTabPersonal($tabPersonal));
+        event(new CreateProfileTabPersonal($tabPersonal, $this));
 
         $tabSecurity = $tabs->pushTab(trans('adm::resources.user.forms.profile.security.title'));
         $tabSecurity->setField('tab-security');
 
-        event(new CreateProfileTabSecurity($tabSecurity));
+        event(new CreateProfileTabSecurity($tabSecurity, $this));
 
         $result = [$tabs];
 
-        event(new CreateResourceFields($result));
+        event(new CreateResourceFields($result, $this));
 
         return $result;
     }
