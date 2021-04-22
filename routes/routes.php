@@ -3,6 +3,7 @@
 use FastDog\Adm\Http\Controllers\AdminController;
 use FastDog\Adm\Http\Controllers\NavController;
 use FastDog\Adm\Http\Controllers\ResourceController;
+use FastDog\Adm\Http\Controllers\SwitchActionController;
 use FastDog\Adm\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
@@ -29,4 +30,7 @@ Route::group([
 
     Route::get('/resource', [ResourceController::class, 'resource']);
     Route::get('/resource/form', [ResourceController::class, 'resourceForm']);
+    Route::post('/resource/form', [ResourceController::class, 'resourceFormSave']);
+
+    Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
 });
