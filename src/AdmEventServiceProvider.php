@@ -7,6 +7,7 @@ use FastDog\Adm\Events\AfterCreateFrontendMenu;
 use FastDog\Adm\Events\BeforeCreateAdministrationMenu;
 use FastDog\Adm\Events\BeforeGetFrontendMenu;
 use FastDog\Adm\Events\GetUserInfo;
+use FastDog\Adm\Events\RunSwitchAction;
 use FastDog\Adm\Events\User\InitRoles;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabPersonal;
 use FastDog\Adm\Events\User\Profile\CreateProfileTabs;
@@ -18,6 +19,7 @@ use FastDog\Adm\Listeners\BeforeCreateAdministrationMenuListener;
 use FastDog\Adm\Listeners\BeforeGetFrontendMenuListeners;
 use FastDog\Adm\Listeners\GetUserInfoListeners;
 use FastDog\Adm\Listeners\InitRolesListeners;
+use FastDog\Adm\Listeners\RunSwitchActionListeners;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabPersonalListener;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabSecurityListeners;
 use FastDog\Adm\Listeners\User\Profile\CreateProfileTabsListener;
@@ -65,6 +67,9 @@ class AdmEventServiceProvider extends ServiceProvider
         ],
         CreateResourceFields::class => [
             CreateResourceFieldsListeners::class,
+        ],
+        RunSwitchAction::class => [
+            RunSwitchActionListeners::class,
         ],
     ];
 

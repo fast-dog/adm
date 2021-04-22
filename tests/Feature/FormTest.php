@@ -15,6 +15,11 @@ class FormTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /**
+     * @var User
+     */
+    protected $user;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -22,21 +27,21 @@ class FormTest extends TestCase
         $this->loadMigrationsFrom(__DIR__.'../../migrations');
 
         $this->runDatabaseMigrations();
-    }
 
-
-    public function testForm()
-    {
         /** @var User $user */
-        $user = User::factory()->create([
+        $this->user = User::factory()->create([
             'name' => 'test',
             'email' => 'adm@test.local',
             'password' => 'password',
         ]);
 
-        Auth::login($user);
+        Auth::login($this->user);
+    }
 
-        $response = $this->get('/api/resource/form?alias=user&id='.$user->id);
+
+    public function testForm()
+    {
+        $response = $this->get('/api/resource/form?alias=user&id='.$this->user->id);
 
         $response->assertStatus(200);
 
@@ -55,5 +60,16 @@ class FormTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function testSwitchAction()
+    {
+        $response = $this->json('POST', '/api/resource/switch-action', [
+            'form' => 'user/profile',
+            'action' => 'two-factor-authentication-enabled',
+            'checked' => true,
+        ]);
+
+        $response->assertStatus(200);
     }
 }
