@@ -32,8 +32,6 @@ class SwitchActionController extends BaseController
             $resourceClass = app()->get(Str::ucfirst($alias).'Resource');
 
             if ($resourceClass) {
-
-
                 event(new RunSwitchAction($result, $resourceClass));
             }
         }
