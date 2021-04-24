@@ -201,7 +201,6 @@ class EloquentAdapter extends DBAdapter
                 $result = $result->toArray();
             }
             $cmd->setResult($result);
-
         } else {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
