@@ -67,7 +67,7 @@ class NavController extends BaseController
             /** @var Resource $resourceClass */
             $resourceClass = app()->get($resource['idx'].'Resource');
             if ($resourceClass) {
-                $alias = Str::lower($resource['idx']);
+                $alias = Str::lower(Str::kebab($resource['idx']));
                 $resourceMenu = (new MenuItem)
                     ->setTitle($resourceClass->getTitle())
                     ->setName($alias)
