@@ -72,4 +72,17 @@ class FormTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function testFormSave()
+    {
+        $response = $this->json('POST', '/api/resource/form', [
+            'form' => 'user/identity',
+            'values' => [
+                'id' => 1,
+                'email' => 'test1@mail.ru',
+            ],
+        ]);
+
+        $response->assertStatus(200);
+    }
 }
