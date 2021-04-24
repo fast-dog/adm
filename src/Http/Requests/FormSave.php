@@ -53,7 +53,6 @@ class FormSave extends FormRequest
                 foreach ($formBackend['validator'] as $idx => $rule) {
                     $this->rules['values.'.$idx] = $rule;
                 }
-
             }
         }
 
