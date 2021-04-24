@@ -33,6 +33,8 @@ class UserResource extends Resource
 
     /** @var array */
     protected array $validators = [
+        'password' => ['required', 'min:8'],
+        'name' => ['required', 'max:50'],
         'email' => ['required', 'email', 'max:50'],
     ];
 
@@ -53,12 +55,6 @@ class UserResource extends Resource
         'profile_photo_path',
         'two_factor_recovery_codes',
     ];
-
-    /**
-     * Подписи
-     * @var string[]
-     */
-    protected array $labels = [];
 
     /**
      * @param  string  $context

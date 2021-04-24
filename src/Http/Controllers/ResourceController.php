@@ -2,6 +2,8 @@
 
 namespace FastDog\Adm\Http\Controllers;
 
+use Dg482\Red\Commands\Crud\Create;
+use Dg482\Red\Commands\Crud\Update;
 use Exception;
 use FastDog\Adm\Http\Requests\FormSave;
 use Illuminate\Http\JsonResponse;
@@ -68,7 +70,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param  Request  $request
+     * @param  FormSave  $request  form validation request
      * @return JsonResponse
      * @throws Exception
      */
@@ -76,22 +78,31 @@ class ResourceController extends BaseController
     {
         $result = [
             'success' => false,
+            'form' => [],
         ];
+
         $resourceClass = $request->getResource();
 
         if ($resourceClass) {
             $formBackend = $request->getFormBackend();
+            $values = $request->get('values', []);
 
-            $update = array_diff_assoc($formBackend['values'], $request->get('values', []));// 1.2 diff update values
-
-            if (!empty($update)) {// 1.3 if exist update values, validate data
-                $resourceClass->getModel()->updateModel($request->all());
+            if (empty($values['id'])) {
+                $cmd = (new Create)->setData($values);// 1.6 set data command
+                $resourceClass->getAdapter()->setCommand($cmd);
+                $result['success'] = $resourceClass->getAdapter()->write();// write new model
+            } else {
+                $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
+                if (!empty($update)) {
+                    $cmd = (new Update)->setData($update);// 1.4.1 set data command
+                    $resourceClass->getAdapter()->setCommand($cmd);
+                    $result['success'] = $resourceClass->getAdapter()->update();// update exist values
+                }
             }
 
-            $result = [
-                'success' => true,
-                'form' => $resourceClass->getForm(),
-            ];
+            if ($result['success']) {
+                $result['form'] = $resourceClass->getForm();
+            }
         }
 
         return response()->json($result);

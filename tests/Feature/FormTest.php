@@ -32,7 +32,6 @@ class FormTest extends TestCase
         $this->user = User::factory()->create([
             'name' => 'test',
             'email' => 'adm@test.local',
-            'password' => 'password',
         ]);
 
         Auth::login($this->user);
@@ -77,12 +76,28 @@ class FormTest extends TestCase
     {
         $response = $this->json('POST', '/api/resource/form', [
             'form' => 'user/identity',
+            'id' => 1,
             'values' => [
                 'id' => 1,
+                'name' => 'update user',
                 'email' => 'test1@mail.ru',
+                'password' => 'password',
             ],
         ]);
 
+        $response->assertStatus(200);
+    }
+
+    public function testFormCreate()
+    {
+        $response = $this->json('POST', '/api/resource/form', [
+            'form' => 'user/identity',
+            'values' => [
+                'name' => 'new user',
+                'email' => 'test1@mail.ru',
+                'password' => '12345678',
+            ],
+        ]);
         $response->assertStatus(200);
     }
 }

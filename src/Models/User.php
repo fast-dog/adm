@@ -11,6 +11,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -62,13 +63,29 @@ class User extends Authenticatable implements Model
     }
 
     /**
-     * @param array $attributes
-     * @param array $options
+     * @param  array  $attributes
+     * @param  array  $options
      * @return bool
      */
     public function updateModel(array $attributes, array $options = []): bool
     {
-        return $this->update($attributes, $options);
+        if (Hash::check($attributes['password'], $this->password)) {
+            return $this->update($attributes, $options);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  array  $attributes
+     * @param  array  $options
+     * @return Model
+     */
+    public function storeModel(array $attributes, array $options = []): Model
+    {
+        $attributes['password'] = Hash::make($attributes['password']);
+
+        return self::create($attributes);
     }
 
     /**
@@ -90,14 +107,14 @@ class User extends Authenticatable implements Model
                     'creatorId' => 'system',
                     'status' => 1,
                     'deleted' => 0,
-                    'permissions' => $this->getPermissionResource($role)
+                    'permissions' => $this->getPermissionResource($role),
                 ];
-            })
+            }),
         ];
     }
 
     /**
-     * @param string $role
+     * @param  string  $role
      * @return array
      * @throws BindingResolutionException
      */
@@ -108,7 +125,7 @@ class User extends Authenticatable implements Model
             ['action' => 'create', 'defaultCheck' => false, 'describe' => ''],
             ['action' => 'read', 'defaultCheck' => false, 'describe' => ''],
             ['action' => 'update', 'defaultCheck' => false, 'describe' => ''],
-            ['action' => 'delete', 'defaultCheck' => false, 'describe' => '']
+            ['action' => 'delete', 'defaultCheck' => false, 'describe' => ''],
         ];
         /** @var CacheManager $cache */
         $cache = app()->get('cache');
@@ -118,15 +135,16 @@ class User extends Authenticatable implements Model
             array_map(function (array $resourceData) use ($role, &$permission, $defaultActions) {
                 $id = Str::lower($resourceData['idx']);
                 /** @var Resource $resource */
-                $resource = app()->make($resourceData['idx'] . 'Resource');
+                $resource = app()->make($resourceData['idx'].'Resource');
                 $permission[] = [
                     'roleId' => $role,
                     'permissionId' => $id,
                     'permissionName' => $resource->getTitle(),
-                    'actions' => $defaultActions
+                    'actions' => $defaultActions,
                 ];
             }, $resources);
         }
+
         return $permission;
     }
 
