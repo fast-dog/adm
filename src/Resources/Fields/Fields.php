@@ -34,4 +34,9 @@ class Fields extends Model implements RedModel
     {
         return $this->update($attributes, $options);
     }
+
+    public function storeModel(array $attributes, array $options = []): RedModel
+    {
+        return $this;
+    }
 }

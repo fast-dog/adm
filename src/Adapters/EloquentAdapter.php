@@ -5,7 +5,9 @@ namespace FastDog\Adm\Adapters;
 use Closure;
 use Dg482\Red\Adapters\Adapter as DBAdapter;
 use Dg482\Red\Builders\Form\Fields\Field;
+use Dg482\Red\Commands\Crud\Create;
 use Dg482\Red\Commands\Crud\Read;
+use Dg482\Red\Commands\Crud\Update;
 use Dg482\Red\Model as DBModel;
 use Exception;
 
@@ -78,7 +80,7 @@ class EloquentAdapter extends DBAdapter
      */
     protected function where(Builder $query): Builder
     {
-        $id = (int) $this->request->input('id', -1);
+        $id = (int) app()->request->input('id', -1);
 
         if ($id > 0) {
             $query->where('id', $id);
@@ -180,6 +182,7 @@ class EloquentAdapter extends DBAdapter
     /**
      * @param  int  $limit
      * @return array
+     * @throws Exception
      */
     public function read($limit = 1): array
     {
@@ -192,17 +195,45 @@ class EloquentAdapter extends DBAdapter
         if (false === $cmd->isMultiple()) {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
-            })->first()->toArray();
+            })->first();
+            if ($result) {
+                $this->setModel($result);
+                $result = $result->toArray();
+            }
             $cmd->setResult($result);
         } else {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
             })->paginate($cmd->getPerPage());
-
+//            $this->setModel($result);
             $cmd->setResult($result->items());
             $result = $result->toArray();
         }
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function write(): bool
+    {
+        /** @var Create $cmd */
+        $cmd = $this->getCommand();
+        $cmd->setModel($this->getModel());
+
+        return $cmd->execute();
+    }
+
+    /**
+     * @return bool
+     */
+    public function update(): bool
+    {
+        /** @var Update $cmd */
+        $cmd = $this->getCommand();
+        $cmd->setModel($this->getModel());
+
+        return $cmd->execute();
     }
 }
