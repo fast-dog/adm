@@ -69,6 +69,11 @@ class TableTest extends TestCase
 
         $this->assertInstanceOf(Fields::class, $adapter->getModel());
 
+        $records = $adapter->read(25);
+
+        $this->assertEquals(1, $records['current_page']);
+        $this->assertCount(2, $records['data']);
+
         app()->get('request')->merge([
             'id' => 1,
         ]);
@@ -77,15 +82,6 @@ class TableTest extends TestCase
 
         $this->assertEquals(1, $record['id']);
         $this->assertEquals('test', $record['name']);
-
-        app()->get('request')->merge([
-            'id' => -1,
-        ]);
-
-        $records = $adapter->read(25);
-
-        $this->assertEquals(1, $records['current_page']);
-        $this->assertCount(2, $records['data']);
     }
 
 

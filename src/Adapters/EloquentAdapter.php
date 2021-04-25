@@ -82,7 +82,9 @@ class EloquentAdapter extends DBAdapter
     {
         $id = (int) app()->request->input('id', -1);
 
-        $query->where('id', $id);
+        if ($id >= 0) {
+            $query->where('id', $id);
+        }
 
         if ($this->filter && $this->filter instanceof Closure) {
             $this->getFilter()($query);
