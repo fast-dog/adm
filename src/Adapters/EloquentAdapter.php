@@ -82,7 +82,7 @@ class EloquentAdapter extends DBAdapter
     {
         $id = (int) app()->request->input('id', -1);
 
-        if ($id > 0) {
+        if ($id >= 0) {
             $query->where('id', $id);
         }
 
