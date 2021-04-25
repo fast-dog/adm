@@ -57,7 +57,7 @@ class ResourceController extends BaseController
         $alias = $request->get('alias');
         if ($alias) {
             /** @var Resource $resourceClass */
-            $resourceClass = app()->get(Str::ucfirst($alias).'Resource');
+            $resourceClass = app()->get(Str::studly($alias).'Resource');
             if ($resourceClass) {
                 $result = [
                     'success' => true,

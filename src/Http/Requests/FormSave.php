@@ -41,7 +41,7 @@ class FormSave extends FormRequest
                 'alias' => $alias,
             ]);
             /** @var Resource $resourceClass */
-            $resourceClass = app()->get(Str::ucfirst($alias).'Resource');
+            $resourceClass = app()->get(Str::studly($alias).'Resource');
 
             if ($resourceClass) {
                 $this->setResource($resourceClass);

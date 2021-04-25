@@ -193,14 +193,14 @@ class EloquentAdapter extends DBAdapter
         $cmd->setMultiple($limit > 1);
 
         if (false === $cmd->isMultiple()) {
-            $result = $this->model::where(function (Builder $query) {
+            $model = $this->model::where(function (Builder $query) {
                 $this->where($query);
             })->first();
-            if ($result) {
-                $this->setModel($result);
-                $result = $result->toArray();
+            if ($model) {
+                $this->setModel($model);
+                $result = $model->toArray();
             }
-            $cmd->setResult($result);
+            $cmd->setResult($result ?? []);
         } else {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
