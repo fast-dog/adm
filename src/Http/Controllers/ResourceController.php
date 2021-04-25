@@ -94,6 +94,7 @@ class ResourceController extends BaseController
             } else {
                 $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
                 if (!empty($update)) {
+                    $update['id'] = $values['id'];
                     $cmd = (new Update)->setData($update);// 1.4.1 set data command
                     $resourceClass->getAdapter()->setCommand($cmd);
                     $result['success'] = $resourceClass->getAdapter()->update();// update exist values
