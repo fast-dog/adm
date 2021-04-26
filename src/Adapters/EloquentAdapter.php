@@ -6,6 +6,7 @@ use Closure;
 use Dg482\Red\Adapters\Adapter as DBAdapter;
 use Dg482\Red\Builders\Form\Fields\Field;
 use Dg482\Red\Commands\Crud\Create;
+use Dg482\Red\Commands\Crud\Delete;
 use Dg482\Red\Commands\Crud\Read;
 use Dg482\Red\Commands\Crud\Update;
 use Dg482\Red\Model as DBModel;
@@ -231,6 +232,18 @@ class EloquentAdapter extends DBAdapter
     public function update(): bool
     {
         /** @var Update $cmd */
+        $cmd = $this->getCommand();
+        $cmd->setModel($this->getModel());
+
+        return $cmd->execute();
+    }
+
+    /**
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        /** @var Delete $cmd */
         $cmd = $this->getCommand();
         $cmd->setModel($this->getModel());
 

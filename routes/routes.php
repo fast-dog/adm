@@ -31,6 +31,7 @@ Route::group([
     Route::get('/resource', [ResourceController::class, 'resource']);
     Route::get('/resource/form', [ResourceController::class, 'resourceForm']);
     Route::post('/resource/form', [ResourceController::class, 'resourceFormSave']);
+    Route::delete('/resource', [ResourceController::class, 'resourceDelete']);
 
     Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
 });

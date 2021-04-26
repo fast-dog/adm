@@ -3,6 +3,7 @@
 namespace FastDog\Adm\Resources\Fields;
 
 use Dg482\Red\Builders\Form;
+use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Resource\Resource;
 
 /**
@@ -63,5 +64,20 @@ class FieldsResource extends Resource
             'last' => $paginator->lastPage(),
             'pageSize' => $paginator->perPage(),
         ];
+    }
+
+    /**
+     * Return form model
+     *
+     * @return BaseForms
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getFormModel(): BaseForms
+    {
+        if (!$this->formModel) {
+            $this->setForm(app()->make(FieldsForm::class));
+        }
+
+        return parent::getFormModel();
     }
 }

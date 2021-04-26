@@ -3,6 +3,8 @@
 namespace FastDog\Adm\Http\Controllers;
 
 use Dg482\Red\Commands\Crud\Create;
+use Dg482\Red\Commands\Crud\Delete;
+use Dg482\Red\Commands\Crud\Read;
 use Dg482\Red\Commands\Crud\Update;
 use Exception;
 use FastDog\Adm\Http\Requests\FormSave;
@@ -29,16 +31,12 @@ class ResourceController extends BaseController
         $result = [
             'success' => false,
         ];
-        $alias = $request->get('alias');
-        if ($alias) {
-            /** @var Resource $resourceClass */
-            $resourceClass = app()->get(Str::studly($alias).'Resource');
-            if ($resourceClass) {
-                $result = [
-                    'success' => true,
-                    'table' => $resourceClass->getTable(),
-                ];
-            }
+
+        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
+            $result = [
+                'success' => true,
+                'table' => $resourceClass->getTable(),
+            ];
         }
 
         return response()->json($result);
@@ -54,16 +52,12 @@ class ResourceController extends BaseController
         $result = [
             'success' => false,
         ];
-        $alias = $request->get('alias');
-        if ($alias) {
-            /** @var Resource $resourceClass */
-            $resourceClass = app()->get(Str::studly($alias).'Resource');
-            if ($resourceClass) {
-                $result = [
-                    'success' => true,
-                    'form' => $resourceClass->getForm(),
-                ];
-            }
+
+        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
+            $result = [
+                'success' => true,
+                'form' => $resourceClass->getForm(),
+            ];
         }
 
         return response()->json($result);
@@ -107,5 +101,40 @@ class ResourceController extends BaseController
         }
 
         return response()->json($result);
+    }
+
+    /**
+     * @param  FormSave  $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function resourceDelete(Request $request): JsonResponse
+    {
+        $result = [
+            'success' => false,
+        ];
+
+        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
+            $resourceClass->getAdapter()->read();
+            $resourceClass->getAdapter()->setCommand((new Delete));
+            $resourceClass->getAdapter()->delete();
+
+            $resourceClass->getAdapter()->setCommand((new Read));
+            $result = [
+                'success' => true,
+                'table' => $resourceClass->getTable(),
+            ];
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * @param  string  $alias
+     * @return Resource|null
+     */
+    private function getResource(string $alias): ?Resource
+    {
+        return (!empty($alias)) ? app()->get(Str::studly($alias).'Resource') : null;
     }
 }
