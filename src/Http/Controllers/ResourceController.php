@@ -115,14 +115,17 @@ class ResourceController extends BaseController
         ];
 
         if ($resourceClass = $this->getResource($request->get('alias', ''))) {
-            $resourceClass->getAdapter()->read();
-            $resourceClass->getAdapter()->setCommand((new Delete));
-            $resourceClass->getAdapter()->delete();
+            $resourceClass->getAdapter()->read();// read model
 
-            $resourceClass->getAdapter()->setCommand((new Read));
+            $resourceClass->getAdapter()->setCommand((new Delete));// set delete cmd
+            $resourceClass->getAdapter()->delete();// execute delete method
+
+            app()->request->merge(['id' => -1]);// reset id model
+
+            $resourceClass->getAdapter()->setCommand((new Read));// new read cmd
             $result = [
                 'success' => true,
-                'table' => $resourceClass->getTable(),
+                'table' => $resourceClass->getTable(),// get new table
             ];
         }
 
