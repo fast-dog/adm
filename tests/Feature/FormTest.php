@@ -2,7 +2,9 @@
 
 namespace FastDog\Adm\Tests\Feature;
 
+use Dg482\Red\Builders\Form\Fields\Field;
 use FastDog\Adm\Models\User;
+use FastDog\Adm\Resources\Fields\Fields;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Auth;
@@ -99,5 +101,43 @@ class FormTest extends TestCase
             ],
         ]);
         $response->assertStatus(200);
+    }
+
+
+    public function testDeleteResourceItem()
+    {
+        Fields::create([
+            'name' => 'test',
+            'email' => 'adm@teest.local',
+        ]);
+
+        $response = $this->json('GET', '/api/resource', [
+            'alias' => 'fields',
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'table' => [
+                'data' => [
+                    ['name' => 'test', 'id' => 1],
+                ],
+            ],
+        ]);
+
+        $response = $this->json('DELETE', '/api/resource', [
+            'alias' => 'fields',
+            'id' => 1,
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+            'table' => [
+                'data' => [],
+            ],
+        ]);
     }
 }
