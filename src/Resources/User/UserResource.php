@@ -13,13 +13,9 @@ use FastDog\Adm\Resources\User\Forms\Identity;
  */
 class UserResource extends Resource
 {
-    /** @var string */
-    protected string $title = '';
-
-    /** @var string */
-    protected string $icon = 'team';
-
-    /** @var string */
+    /**
+     * @var string
+     */
     protected string $resourceModel = User::class;
 
     /**
@@ -28,10 +24,13 @@ class UserResource extends Resource
      */
     protected array $relations = [
         'profile' => ProfileResource::class,
-//        'files' => UserFilesResource::class,
+//       'files' => UserFilesResource::class,
     ];
 
-    /** @var array */
+    /**
+     * Правила валидации
+     * @var array $validators
+     */
     protected array $validators = [
         'password' => ['required', 'min:8'],
         'name' => ['required', 'max:50'],
@@ -43,7 +42,6 @@ class UserResource extends Resource
      * @var string[]
      */
     protected array $hidden_fields = [
-        'id',
         'email_verified_at',
         'verify_token',
         'remember_token',
@@ -57,7 +55,7 @@ class UserResource extends Resource
     ];
 
     /**
-     * @param  string  $context
+     * @param string $context
      * @return Resource
      */
     public function initResource(string $context = ''): Resource
@@ -70,7 +68,7 @@ class UserResource extends Resource
             'role' => trans('adm::resources.user.forms.identity.fields.role'),
             'password' => trans('adm::resources.user.forms.identity.fields.password'),
         ]);
-
+        $this->setIcon('team');
         $this->setContext(__CLASS__);
 
         return $this;

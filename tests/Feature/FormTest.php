@@ -26,7 +26,7 @@ class FormTest extends TestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__.'../../migrations');
+        $this->loadMigrationsFrom(__DIR__ . '../../migrations');
 
         $this->runDatabaseMigrations();
 
@@ -42,7 +42,7 @@ class FormTest extends TestCase
 
     public function testForm()
     {
-        $response = $this->get('/api/resource/form?alias=user&id='.$this->user->id);
+        $response = $this->get('/api/resource/form?alias=user&id=' . $this->user->id);
 
         $response->assertStatus(200);
 

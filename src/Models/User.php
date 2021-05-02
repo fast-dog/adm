@@ -83,8 +83,6 @@ class User extends Authenticatable implements Model
      */
     public function storeModel(array $attributes, array $options = []): Model
     {
-        $attributes['password'] = Hash::make($attributes['password']);
-
         return self::create($attributes);
     }
 
