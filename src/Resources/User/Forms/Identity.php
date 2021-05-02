@@ -5,10 +5,12 @@ namespace FastDog\Adm\Resources\User\Forms;
 use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Builders\Form\Fields\Field;
 use Dg482\Red\Builders\Form\Fields\PasswordField;
+use Dg482\Red\Builders\Form\Fields\Values\StringValue;
 use Dg482\Red\Builders\Form\FormModelInterface;
 use Dg482\Red\Builders\Form\Structure\Fieldset;
 use Exception;
 use FastDog\Adm\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class Profile
@@ -18,7 +20,7 @@ class Identity extends BaseForms implements FormModelInterface
 {
     /**
      * Identity constructor.
-     * @param  User  $model
+     * @param User $model
      */
     public function __construct(User $model)
     {
@@ -42,7 +44,7 @@ class Identity extends BaseForms implements FormModelInterface
     /**
      * Password field overwrite method
      *
-     * @param  Field  $field
+     * @param Field $field
      * @return Field
      * @throws \Dg482\Red\Exceptions\EmptyFieldNameException
      */
@@ -54,5 +56,15 @@ class Identity extends BaseForms implements FormModelInterface
         $passwordField->hideTable();// hide password field in tables
 
         return $passwordField;
+    }
+
+    /**
+     * @param Field $password
+     * @param $value
+     * @return StringValue
+     */
+    public function safeFieldPassword(Field $password, $value): StringValue
+    {
+        return new StringValue(0, Hash::make($value));
     }
 }
