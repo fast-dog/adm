@@ -22,7 +22,7 @@ use Dg482\Red\Resource\Resource;
 class ResourceController extends BaseController
 {
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @return JsonResponse
      * @throws \Exception
      */
@@ -43,7 +43,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @return JsonResponse
      * @throws Exception
      */
@@ -64,7 +64,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param  FormSave  $request  form validation request
+     * @param FormSave $request form validation request
      * @return JsonResponse
      * @throws Exception
      */
@@ -75,28 +75,34 @@ class ResourceController extends BaseController
             'form' => [],
         ];
 
-        $resourceClass = $request->getResource();
+        $resource = $request->getResource();
 
-        if ($resourceClass) {
+        if ($resource) {
             $formBackend = $request->getFormBackend();
-            $values = $request->get('values', []);
+            $values = $resource->getFieldsValue($request->get('values', []));
 
-            if (empty($values['id'])) {
-                $cmd = (new Create)->setData($values);// 1.6 set data command
-                $resourceClass->getAdapter()->setCommand($cmd);
-                $result['success'] = $resourceClass->getAdapter()->write();// write new model
-            } else {
+            $command = $resource->getActionCommand($values);
+
+
+            if ($command instanceof Create) {
+                $command->setData($values);
+                $resource->getAdapter()->setCommand($command);
+                $result['success'] = $resource->getAdapter()->write();// write new model
+            } else if ($command instanceof Update) {
                 $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
                 if (!empty($update)) {
+                    $command->setData($update);
                     $update['id'] = $values['id'];
-                    $cmd = (new Update)->setData($update);// 1.4.1 set data command
-                    $resourceClass->getAdapter()->setCommand($cmd);
-                    $result['success'] = $resourceClass->getAdapter()->update();// update exist values
+                    $resource->getAdapter()->setCommand($command);
+                    $result['success'] = $resource->getAdapter()->update();// update exist values
                 }
+            } else {
+                $resource->getAdapter()->setCommand($command);
+                $result['success'] = $resource->getAdapter()->execute();// run action command
             }
 
             if ($result['success']) {
-                $result['form'] = $resourceClass->getForm();
+                $result['form'] = $resource->getForm();
             }
         }
 
@@ -104,7 +110,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param  FormSave  $request
+     * @param FormSave $request
      * @return JsonResponse
      * @throws Exception
      */
@@ -133,11 +139,11 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param  string  $alias
+     * @param string $alias
      * @return Resource|null
      */
     private function getResource(string $alias): ?Resource
     {
-        return (!empty($alias)) ? app()->get(Str::studly($alias).'Resource') : null;
+        return (!empty($alias)) ? app()->get(Str::studly($alias) . 'Resource') : null;
     }
 }
