@@ -88,7 +88,7 @@ class ResourceController extends BaseController
                 $command->setData($values);
                 $resource->getAdapter()->setCommand($command);
                 $result['success'] = $resource->getAdapter()->write();// write new model
-            } else if ($command instanceof Update) {
+            } elseif ($command instanceof Update) {
                 $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
                 if (!empty($update)) {
                     $command->setData($update);
