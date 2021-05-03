@@ -11,6 +11,7 @@ use FastDog\Adm\Http\Requests\FormSave;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Dg482\Red\Resource\Resource;
 
@@ -74,7 +75,7 @@ class ResourceController extends BaseController
             'success' => false,
             'form' => [],
         ];
-
+        /** @var Resource $resource */
         $resource = $request->getResource();
 
         if ($resource) {
@@ -82,24 +83,41 @@ class ResourceController extends BaseController
             $values = $resource->getFieldsValue($request->get('values', []));
 
             $command = $resource->getActionCommand($values);
-
-
+            $command->setData($values);
+            $resource->getAdapter()->setCommand($command);
+            $method = 'execute';
             if ($command instanceof Create) {
-                $command->setData($values);
-                $resource->getAdapter()->setCommand($command);
-                $result['success'] = $resource->getAdapter()->write();// write new model
+                $method = 'write';
             } elseif ($command instanceof Update) {
                 $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
                 if (!empty($update)) {
-                    $command->setData($update);
                     $update['id'] = $values['id'];
+                    $command->setData($update);
                     $resource->getAdapter()->setCommand($command);
-                    $result['success'] = $resource->getAdapter()->update();// update exist values
+                    $method = 'update';
                 }
-            } else {
-                $resource->getAdapter()->setCommand($command);
-                $result['success'] = $resource->getAdapter()->execute();// run action command
             }
+
+            DB::transaction(function () use ($resource, &$result, $values, $method) {
+                $result['success'] = $resource->getAdapter()->{$method}();// write new model
+                if ($result['success']) {
+                    foreach ($resource->getRelations() as $idx => $relation) {
+                        $relationValue = [];
+                        foreach ($values as $name => $value) {
+                            if (strpos($idx . '@', $name) !== false && !empty($value)) {
+                                $name = str_replace($idx . '@', '', $name);
+                                $relationValue[$name] = $value;
+                            }
+                        }
+                        if (!empty($relationValue)) {
+                            /** @var Resource $relationInstance */
+                            $relationInstance = $resource->getRelationInstance($idx);
+                            $resource->getAdapter()->setModel($relationInstance->getModel());
+                            $result['success'] = $resource->getAdapter()->{$method}();// write new relation model
+                        }
+                    }
+                }
+            });
 
             if ($result['success']) {
                 $result['form'] = $resource->getForm();
