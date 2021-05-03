@@ -80,6 +80,7 @@ class ResourceController extends BaseController
 
         if ($resource) {
             $formBackend = $request->getFormBackend();
+            // get field specific value (field logic execution)
             $values = $resource->getFieldsValue($request->get('values', []));
 
             $command = $resource->getActionCommand($values);
@@ -101,19 +102,33 @@ class ResourceController extends BaseController
             DB::transaction(function () use ($resource, &$result, $values, $method) {
                 $result['success'] = $resource->getAdapter()->{$method}();// write new model
                 if ($result['success']) {
-                    foreach ($resource->getRelations() as $idx => $relation) {
-                        $relationValue = [];
-                        foreach ($values as $name => $value) {
-                            if (strpos($idx . '@', $name) !== false && !empty($value)) {
-                                $name = str_replace($idx . '@', '', $name);
-                                $relationValue[$name] = $value;
+                    // exist relations
+                    if (!empty($resource->getRelations())) {
+                        $model = $resource->getAdapter()->getCommand()->getModel();
+
+                        foreach ($resource->getRelations() as $idx => $relation) {
+                            $relationValues = [];
+                            foreach ($values as $name => $value) {
+                                if (strpos($idx . '@', $name) !== false && !empty($value)) {
+                                    $name = str_replace($idx . '@', '', $name);
+                                    $relationValues[$idx][$name] = $value;
+                                }
                             }
-                        }
-                        if (!empty($relationValue)) {
-                            /** @var Resource $relationInstance */
-                            $relationInstance = $resource->getRelationInstance($idx);
-                            $resource->getAdapter()->setModel($relationInstance->getModel());
-                            $result['success'] = $resource->getAdapter()->{$method}();// write new relation model
+                            if (!empty($relationValues)) {
+                                foreach ($relationValues as $relation => $values) {
+                                    $values[$model->getTable() . '_id'] = $model->id;// set {owner_table}_id
+                                    /** @var Resource $relationInstance relation resource */
+                                    $relationInstance = $resource->getRelationInstance($relation);
+                                    // set relation model
+                                    $resource->getAdapter()->setModel($relationInstance->getModel());
+                                    // get specific fields value (field logic execution)
+                                    $values = $relationInstance->getFieldsValue($values);
+                                    // update cmd data
+                                    $resource->getAdapter()->getCommand()->setData($values);
+                                    // write or update relation model
+                                    $result['success'] = $resource->getAdapter()->{$method}();
+                                }
+                            }
                         }
                     }
                 }
