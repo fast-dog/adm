@@ -112,4 +112,11 @@ class UserTest extends TestCase
             ],
         ]);
     }
+
+    public function testHasOneResourceField()
+    {
+        $hasOneForm = $this->resource->hasOne('profile')->getForm();
+
+        $this->assertEquals('user/profile', $hasOneForm['form']);
+    }
 }

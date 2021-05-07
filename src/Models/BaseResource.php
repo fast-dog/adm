@@ -28,16 +28,14 @@ class BaseResource extends Resource
         $model = $this->getModel()->{$relation};
 
         $resource = (isset($this->relations[$relation]) && class_exists($this->relations[$relation])) ?
-            new $this->relations[$relation] : app()->make(RelationResource::class);
-        $resource->setRelation($relation);
-        $resource->setContext($this->getContext());
-        if ($model === null) {
-            $model = $resource->getModel();
-            $model = (new $model);
-        }
+            app()->make($this->relations[$relation]) : app()->make(RelationResource::class);
 
-        $resource->setModel($model);
-        $resource->getAdapter()->setModel($model);
+        $resource->setContext($this->getContext());
+        if ($model) {
+            $resource->setRelation($relation);
+            $resource->setModel($model);
+            $resource->getAdapter()->setModel($model);
+        }
 
         return $resource;
     }
