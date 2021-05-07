@@ -56,11 +56,14 @@ class BaseResource extends Resource
 
         /** @var Collection $collection */
         $collection = $model->{$relation};// relation HasMany
+
+        /** @var Resource|RelationResource $resource */
+        $resource = app()->make($this->relations[$relation]);
+
         if ($collection) {
             $relationModel = $collection->get(0);
 
-            /** @var Resource|RelationResource $resource */
-            $resource = app()->make($this->relations[$relation]);
+
             $resource->setRelation($relationModel);
             $resource->setContext($this->getContext());
 
