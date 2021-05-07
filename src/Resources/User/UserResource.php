@@ -4,6 +4,7 @@ namespace FastDog\Adm\Resources\User;
 
 use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Resource\Resource;
+use FastDog\Adm\Models\BaseResource;
 use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\User\Forms\Identity;
 
@@ -11,7 +12,7 @@ use FastDog\Adm\Resources\User\Forms\Identity;
  * Class UserResource
  * @package App\Resources
  */
-class UserResource extends Resource
+class UserResource extends BaseResource
 {
     /**
      * @var string
@@ -55,7 +56,7 @@ class UserResource extends Resource
     ];
 
     /**
-     * @param string $context
+     * @param  string  $context
      * @return Resource
      */
     public function initResource(string $context = ''): Resource
