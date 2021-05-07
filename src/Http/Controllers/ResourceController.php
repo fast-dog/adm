@@ -90,13 +90,7 @@ class ResourceController extends BaseController
             if ($command instanceof Create) {
                 $method = 'write';
             } elseif ($command instanceof Update) {
-                $update = array_diff_assoc($values, $formBackend['values']);// 1.2 diff update values
-                if (!empty($update)) {
-                    $update['id'] = $values['id'];
-                    $command->setData($update);
-                    $resource->getAdapter()->setCommand($command);
-                    $method = 'update';
-                }
+                 $method = 'update';
             }
 
             DB::transaction(function () use ($resource, &$result, $values, $method) {
