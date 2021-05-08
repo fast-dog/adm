@@ -20,10 +20,11 @@ class BaseResource extends Resource
 {
     /**
      * @param  string  $relation
+     * @param  Field|null  $field
      * @return RelationResource
      * @throws BindingResolutionException
      */
-    public function hasOne(string $relation): RelationResource
+    public function hasOne(string $relation, Field &$field = null): RelationResource
     {
         $model = $this->getModel()->{$relation};
 
@@ -33,8 +34,14 @@ class BaseResource extends Resource
         $resource->setContext($this->getContext());
         if ($model) {
             $resource->setRelation($relation);
+            $resource->setContext($this->getContext());
             $resource->setModel($model);
-            $resource->getAdapter()->setModel($model);
+            $resource->getAdapter()->setModel($model);// set relation data in Adapter
+            $resource->getAdapter()->getCommand()->setResult($model->toAray() ?? []);
+
+            if (method_exists($field, 'setFieldRelation')) {
+                $field->setFieldRelation($this->getModel(), $model);// set relation data in Field
+            }
         }
 
         return $resource;
@@ -42,13 +49,13 @@ class BaseResource extends Resource
 
     /**
      * @param  string  $relation
-     * @param  Field  $field
+     * @param  Field|null  $field
      * @return RelationResource
-     * @throws BindingResolutionException
      * @throws BadVariantKeyException
+     * @throws BindingResolutionException
      * @throws EmptyFieldNameException
      */
-    public function hasMany(string $relation, Field &$field): RelationResource
+    public function hasMany(string $relation, Field &$field = null): RelationResource
     {
         $model = $this->getAdapter()->getModel();
 
@@ -63,7 +70,6 @@ class BaseResource extends Resource
         if ($collection) {
             $relationModel = $collection->get(0);
 
-
             $resource->setRelation($relationModel);
             $resource->setContext($this->getContext());
 
@@ -71,10 +77,14 @@ class BaseResource extends Resource
                 $relationModel = $resource->getModel();
             }
 
-            $resource->getAdapter()->setModel($relationModel);// set relation Model
+            $resource->getAdapter()->setModel($relationModel);// set relation Model in Adapter
             $resource->getAdapter()->getCommand()->setResult($collection->all());
 
-            $resource->setCollection($collection ? ['total' => $collection->count()] : []);
+            $resource->setCollection(['total' => $collection->count()]);
+
+            if (method_exists($field, 'setFieldRelation')) {
+                $field->setFieldRelation($model, $relationModel);// set relation data in Field
+            }
         }
 
         $table = $resource->getTable(true);
