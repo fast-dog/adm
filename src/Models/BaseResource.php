@@ -9,6 +9,7 @@ use Dg482\Red\Exceptions\BadVariantKeyException;
 use Dg482\Red\Exceptions\EmptyFieldNameException;
 use Dg482\Red\Resource\RelationResource;
 use Dg482\Red\Resource\Resource;
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
 
@@ -54,6 +55,7 @@ class BaseResource extends Resource
      * @throws BadVariantKeyException
      * @throws BindingResolutionException
      * @throws EmptyFieldNameException
+     * @throws Exception
      */
     public function hasMany(string $relation, Field &$field = null): RelationResource
     {
@@ -73,6 +75,7 @@ class BaseResource extends Resource
             $resource->setRelation($relationModel);
             $resource->setContext($this->getContext());
 
+
             if (null === $relationModel) {
                 $relationModel = $resource->getModel();
             }
@@ -85,20 +88,24 @@ class BaseResource extends Resource
             if (method_exists($field, 'setFieldRelation')) {
                 $field->setFieldRelation($model, $relationModel);// set relation data in Field
             }
-        }
 
-        $table = $resource->getTable(true);
+            $table = $resource->getTable(true);
 
-        // prepare table data
-        if ($field instanceof FileField) {
-            if ($table['pagination']['total'] > 0) {
-                array_map(function (array $file) use (&$field) {
-                    $field->getValue()->push(new StringValue($file['id'], $file['path']));
-                }, $table['data']);
+            // prepare table data
+            if ($field instanceof FileField) {
+                if ($table['pagination']['total'] > 0) {
+                    array_map(function (array $file) use (&$field) {
+                        $field->getValue()->push(new StringValue($file['id'], $file['path']));
+                    }, $table['data']);
+                }
             }
+
+            $resource->setFields([$field]);
         }
 
         $resource->getAdapter()->setModel($model);// set self Model
+
+        $this->setRelationInstance($relation, $resource);// set self relation instance
 
         return $resource;
     }
