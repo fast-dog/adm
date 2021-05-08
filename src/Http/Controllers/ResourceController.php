@@ -11,6 +11,7 @@ use FastDog\Adm\Http\Requests\FormSave;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Dg482\Red\Resource\Resource;
@@ -81,7 +82,7 @@ class ResourceController extends BaseController
         if ($resource) {
             $formBackend = $request->getFormBackend();
             // get field specific value (field logic execution)
-            $values = $resource->getFieldsValue($request->get('values', []));
+            $values = $resource->getFieldsValue(array_merge($request->get('values', []), Arr::get($request->files->all(), 'values', [])));
 
             $command = $resource->getActionCommand($values);
             $command->setData($values);
