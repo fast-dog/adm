@@ -75,6 +75,9 @@ class BaseResource extends Resource
             $resource->setRelation($relationModel);
             $resource->setContext($this->getContext());
 
+            if ($this->getAssets()) {
+                $resource->setAssets($this->getAssets());
+            }
 
             if (null === $relationModel) {
                 $relationModel = $resource->getModel();
