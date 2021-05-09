@@ -216,11 +216,15 @@ class EloquentAdapter extends DBAdapter
 
     /**
      * @return bool
+     * @throws Exception
      */
     public function write(): bool
     {
         /** @var Create $cmd */
         $cmd = $this->getCommand();
+        if (!$cmd instanceof Create) {
+            throw new Exception('Command not Create instance');
+        }
         $cmd->setModel($this->getModel());
 
         return $cmd->execute();
@@ -228,11 +232,15 @@ class EloquentAdapter extends DBAdapter
 
     /**
      * @return bool
+     * @throws Exception
      */
     public function update(): bool
     {
         /** @var Update $cmd */
         $cmd = $this->getCommand();
+        if (!$cmd instanceof Update) {
+            throw new Exception('Command not Update instance');
+        }
         $cmd->setModel($this->getModel());
 
         return $cmd->execute();
@@ -240,11 +248,15 @@ class EloquentAdapter extends DBAdapter
 
     /**
      * @return bool
+     * @throws Exception
      */
     public function delete(): bool
     {
         /** @var Delete $cmd */
         $cmd = $this->getCommand();
+        if (!$cmd instanceof Delete) {
+            throw new Exception('Command not Delete instance');
+        }
         $cmd->setModel($this->getModel());
 
         return $cmd->execute();

@@ -8,9 +8,11 @@ use Dg482\Red\Commands\Crud\Read;
 use Dg482\Red\Commands\Crud\Update;
 use Exception;
 use FastDog\Adm\Http\Requests\FormSave;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Dg482\Red\Resource\Resource;
@@ -23,7 +25,7 @@ use Dg482\Red\Resource\Resource;
 class ResourceController extends BaseController
 {
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      * @throws \Exception
      */
@@ -44,7 +46,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      * @throws Exception
      */
@@ -65,14 +67,14 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param FormSave $request form validation request
+     * @param  FormSave  $request  form validation request
      * @return JsonResponse
      * @throws Exception
      */
     public function resourceFormSave(FormSave $request): JsonResponse
     {
         $result = [
-            'success' => false,
+            'success' => true,
             'form' => [],
         ];
         /** @var Resource $resource */
@@ -81,7 +83,9 @@ class ResourceController extends BaseController
         if ($resource) {
             $formBackend = $request->getFormBackend();
             // get field specific value (field logic execution)
-            $values = $resource->getFieldsValue($request->get('values', []));
+            $values = $resource->getFieldsValue(
+                array_merge($request->get('values', []), Arr::get($request->files->all(), 'values', []))
+            );
 
             $command = $resource->getActionCommand($values);
             $command->setData($values);
@@ -90,38 +94,46 @@ class ResourceController extends BaseController
             if ($command instanceof Create) {
                 $method = 'write';
             } elseif ($command instanceof Update) {
-                 $method = 'update';
+                $method = 'update';
             }
 
             DB::transaction(function () use ($resource, &$result, $values, $method) {
                 $result['success'] = $resource->getAdapter()->{$method}();// write new model
-                if ($result['success']) {
-                    // exist relations
-                    if (!empty($resource->getRelations())) {
-                        $model = $resource->getAdapter()->getCommand()->getModel();
-
-                        foreach ($resource->getRelations() as $idx => $relation) {
-                            $relationValues = [];
-                            foreach ($values as $name => $value) {
-                                if (strpos($idx . '@', $name) !== false && !empty($value)) {
-                                    $name = str_replace($idx . '@', '', $name);
-                                    $relationValues[$idx][$name] = $value;
-                                }
+                // exist relations
+                if (!empty($resource->getRelations())) {
+                    $model = $resource->getAdapter()->getCommand()->getModel();
+                    foreach ($resource->getRelations() as $idx => $relation) {
+                        $relationValues = [];
+                        foreach ($values as $name => $value) {
+                            if (strpos($name, $idx.'@') !== false && !empty($value)) {
+                                $name = str_replace($idx.'@', '', $name);
+                                $relationValues[$idx][$name] = $value;
                             }
-                            if (!empty($relationValues)) {
-                                foreach ($relationValues as $relation => $values) {
-                                    $values[$model->getTable() . '_id'] = $model->id;// set {owner_table}_id
-                                    /** @var Resource $relationInstance relation resource */
+                        }
+                        if (!empty($relationValues)) {
+                            foreach ($relationValues as $relation => $values) {
+                                $values[$model->getTable().'_id'] = $model->id;// set {owner_table}_id
+                                /** @var Resource $relationInstance relation resource */
+                                $relationInstance = $resource->getRelationInstance($relation);
+                                if (null === $relationInstance) {
+                                    $resource->setRelationInstance($relation, app()->make(
+                                        $resource->getRelations()[$relation]
+                                    ));
                                     $relationInstance = $resource->getRelationInstance($relation);
-                                    // set relation model
-                                    $resource->getAdapter()->setModel($relationInstance->getModel());
-                                    // get specific fields value (field logic execution)
-                                    $values = $relationInstance->getFieldsValue($values);
-                                    // update cmd data
-                                    $resource->getAdapter()->getCommand()->setData($values);
-                                    // write or update relation model
-                                    $result['success'] = $resource->getAdapter()->{$method}();
                                 }
+
+                                // set relation model
+                                $resource->getAdapter()->setModel($relationInstance->getModel());
+                                // get specific fields value (field logic execution)
+                                $values = $relationInstance->getFieldsValue($values);
+
+                                // update cmd data
+                                $cmd = $resource->getAdapter()->getCommand();
+                                if (method_exists($cmd, 'setData')) {
+                                    $cmd->setData($values);
+                                }
+                                // write or update relation model
+                                $resource->getAdapter()->{$method}();
                             }
                         }
                     }
@@ -137,7 +149,7 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param FormSave $request
+     * @param  FormSave  $request
      * @return JsonResponse
      * @throws Exception
      */
@@ -147,18 +159,18 @@ class ResourceController extends BaseController
             'success' => false,
         ];
 
-        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
-            $resourceClass->getAdapter()->read();// read model
+        if ($resource = $this->getResource($request->get('alias', ''))) {
+            $resource->getAdapter()->read();// read model
 
-            $resourceClass->getAdapter()->setCommand((new Delete));// set delete cmd
-            $resourceClass->getAdapter()->delete();// execute delete method
+            $resource->getAdapter()->setCommand((new Delete));// set delete cmd
+            $resource->getAdapter()->delete();// execute delete method
 
             app()->request->merge(['id' => -1]);// reset id model
 
-            $resourceClass->getAdapter()->setCommand((new Read));// new read cmd
+            $resource->getAdapter()->setCommand((new Read));// new read cmd
             $result = [
                 'success' => true,
-                'table' => $resourceClass->getTable(),// get new table
+                'table' => $resource->getTable(),// get new table
             ];
         }
 
@@ -166,11 +178,34 @@ class ResourceController extends BaseController
     }
 
     /**
-     * @param string $alias
+     * @param  string  $alias
      * @return Resource|null
      */
     private function getResource(string $alias): ?Resource
     {
-        return (!empty($alias)) ? app()->get(Str::studly($alias) . 'Resource') : null;
+        return (!empty($alias)) ? app()->get(Str::studly($alias).'Resource') : null;
+    }
+
+    /**
+     * @param  Request  $request
+     * @return JsonResponse
+     */
+    public function resourceAssetsDelete(Request $request): JsonResponse
+    {
+        $result = [
+            'success' => false,
+        ];
+
+        if ($resource = $this->getResource($request->get('alias', ''))) {
+            $storage = $resource->getAssets();
+            if (!empty($storage) && class_exists($storage)) {
+                /** @var Model $storage */
+                $storage = (new $storage);
+                $storage = $storage->get($request->get('id'));
+                $storage->delete();
+            }
+        }
+
+        return response()->json($result);
     }
 }

@@ -140,4 +140,14 @@ class FormTest extends TestCase
             ],
         ]);
     }
+
+    public function testDeleteResourceAssets()
+    {
+        $response = $this->json('DELETE', '/api/resource/assets', [
+            'alias' => 'user',
+            'id' => 1,
+        ]);
+
+        $response->assertStatus(200);
+    }
 }
