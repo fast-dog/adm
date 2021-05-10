@@ -51,7 +51,7 @@ class UserTest extends TestCase
     {
         $permissionDefaultResource = $this->user->getPermissionResource();
 
-        $this->assertCount(2, $permissionDefaultResource);
+        $this->assertCount(1, $permissionDefaultResource);
     }
 
     public function testUserInfo()
