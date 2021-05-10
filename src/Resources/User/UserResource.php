@@ -76,20 +76,6 @@ class UserResource extends BaseResource
     }
 
     /**
-     * @param $paginator
-     * @return array
-     */
-    protected function getPagination($paginator): array
-    {
-        return [
-            'total' => $paginator->total(),
-            'current' => $paginator->currentPage(),
-            'last' => $paginator->lastPage(),
-            'pageSize' => $paginator->perPage(),
-        ];
-    }
-
-    /**
      * Return form model
      *
      * @return BaseForms

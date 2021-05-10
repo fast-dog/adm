@@ -20,25 +20,6 @@ class LocalCache
     /**
      * @param $key
      * @param $values
-     */
-    public function set($key, $values): void
-    {
-        $this->storage[$key] = $values;
-    }
-
-    /**
-     * @param $key
-     * @param  null  $default
-     * @return mixed|null
-     */
-    public function get($key, $default = null)
-    {
-        return $this->storage[$key] ?? $default;
-    }
-
-    /**
-     * @param $key
-     * @param $values
      * @param  string  $tags
      */
     public function setCache($key, $values, $tags = 'default'): void
