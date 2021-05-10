@@ -7,6 +7,8 @@ use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\Fields\Fields;
 use FastDog\Adm\Resources\Fields\FieldsForm;
 use FastDog\Adm\Resources\Fields\FieldsResource;
+use FastDog\Adm\Resources\User\Forms\Identity;
+use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Auth;
@@ -20,8 +22,8 @@ class TableTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /** @var FieldsResource */
-    protected FieldsResource $resource;
+    /** @var UserResource */
+    protected UserResource $resource;
 
     public function setUp(): void
     {
@@ -31,8 +33,8 @@ class TableTest extends TestCase
 
         $this->runDatabaseMigrations();
 
-        /** @var FieldsResource $resource */
-        $this->resource = $this->app->get(FieldsResource::class);
+        /** @var UserResource $resource */
+        $this->resource = $this->app->get(UserResource::class);
     }
 
 
@@ -41,8 +43,8 @@ class TableTest extends TestCase
         $this->assertTrue(Schema::hasTable('test_field'));
 
 
-        /** @var FieldsForm $form */
-        $form = $this->app->get(FieldsForm::class);
+        /** @var Identity $form */
+        $form = $this->app->get(Identity::class);
 
         $this->resource->setForm($form);
 
@@ -50,24 +52,27 @@ class TableTest extends TestCase
 
         $fields = $this->resource->fields();
 
-        $this->assertCount(36, $fields);
+        $this->assertCount(4, $fields);
     }
 
     public function testAdapter()
     {
-        Fields::create([
-            'name' => 'test',
+        User::factory()->create([
+            'name' => 'test 1',
+            'email' => 'adm1@test.local',
+            'password' => 'password',
         ]);
-
-        Fields::create([
+        User::factory()->create([
             'name' => 'test 2',
+            'email' => 'adm2@test.local',
+            'password' => 'password',
         ]);
 
         $adapter = $this->resource->getAdapter();
-        $adapter->setModel((new Fields));
+        $adapter->setModel((new User));
         $adapter->setFilter(null);
 
-        $this->assertInstanceOf(Fields::class, $adapter->getModel());
+        $this->assertInstanceOf(User::class, $adapter->getModel());
 
         $records = $adapter->read(25);
 
@@ -81,7 +86,7 @@ class TableTest extends TestCase
         $record = $adapter->read(1);
 
         $this->assertEquals(1, $record['id']);
-        $this->assertEquals('test', $record['name']);
+        $this->assertEquals('test 1', $record['name']);
     }
 
 
