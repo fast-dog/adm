@@ -197,7 +197,7 @@ class ResourceController extends BaseController
         ];
 
         if ($resource = $this->getResource($request->get('alias', ''))) {
-            if ($storage = $resource->getAssets())  {
+            if ($storage = $resource->getAssets()) {
                 $storage->get($request->get('id'));
                 $storage->remove();
             }

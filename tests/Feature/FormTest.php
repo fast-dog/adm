@@ -26,7 +26,7 @@ class FormTest extends TestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '../../migrations');
+        $this->loadMigrationsFrom(__DIR__.'../../migrations');
 
         $this->runDatabaseMigrations();
 
@@ -42,7 +42,7 @@ class FormTest extends TestCase
 
     public function testForm()
     {
-        $response = $this->get('/api/resource/form?alias=user&id=' . $this->user->id);
+        $response = $this->get('/api/resource/form?alias=user&id='.$this->user->id);
 
         $response->assertStatus(200);
 
@@ -103,6 +103,22 @@ class FormTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testFormUpdate()
+    {
+        $response = $this->json('POST', '/api/resource/form', [
+            'form' => 'user/identity',
+            'id' => $this->user->id,
+            'values' => [
+                'id' => $this->user->id,
+                'name' => 'new user',
+                'email' => 'test1@mail.ru',
+                'password' => '12345678',
+            ],
+        ]);
+
+        $response->assertStatus(200);
+    }
+
 
     public function testDeleteResourceItem()
     {
@@ -119,11 +135,6 @@ class FormTest extends TestCase
 
         $response->assertJson([
             'success' => true,
-            'table' => [
-                'data' => [
-                    ['name' => 'test', 'id' => 1],
-                ],
-            ],
         ]);
 
         $response = $this->json('DELETE', '/api/resource', [
