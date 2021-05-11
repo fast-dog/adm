@@ -18,15 +18,24 @@ use Illuminate\Support\Facades\Hash;
  */
 class Identity extends BaseForms implements FormModelInterface
 {
+    /** @var User */
+    private User $user;
+
+    /** @var Profile */
+    private Profile $profile;
+
     /**
      * Identity constructor.
-     * @param User $model
+     * @param  User  $model
+     * @param  Profile  $profile
      */
-    public function __construct(User $model)
+    public function __construct(User $model, Profile $profile)
     {
         $this->setTitle(trans('adm::resources.user.forms.identity.title'));
         $this->setFormName('user/identity');
         $this->setModel($model);
+
+        $this->profile = $profile;
     }
 
     /**
@@ -35,16 +44,19 @@ class Identity extends BaseForms implements FormModelInterface
      */
     public function resourceFields(): array
     {
-        return [
-            Fieldset::make(trans('adm::resources.user.forms.identity.general'), 'general_fieldset')
-                ->setItems($this->fields()),
-        ];
+        return array_merge(
+            [
+                Fieldset::make(trans('adm::resources.user.forms.identity.general'), 'general_fieldset')
+                    ->setItems($this->fields()),
+            ],
+            $this->profile->resourceFields()
+        );
     }
 
     /**
      * Password field overwrite method
      *
-     * @param Field $field
+     * @param  Field  $field
      * @return Field
      * @throws \Dg482\Red\Exceptions\EmptyFieldNameException
      */
@@ -59,7 +71,7 @@ class Identity extends BaseForms implements FormModelInterface
     }
 
     /**
-     * @param Field $password
+     * @param  Field  $password
      * @param $request
      * @return StringValue
      */

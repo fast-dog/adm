@@ -37,12 +37,8 @@ class TableTest extends TestCase
         $this->resource = $this->app->get(UserResource::class);
     }
 
-
     public function testInit()
     {
-        $this->assertTrue(Schema::hasTable('test_field'));
-
-
         /** @var Identity $form */
         $form = $this->app->get(Identity::class);
 

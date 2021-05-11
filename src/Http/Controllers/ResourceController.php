@@ -8,7 +8,6 @@ use Dg482\Red\Commands\Crud\Read;
 use Dg482\Red\Commands\Crud\Update;
 use Exception;
 use FastDog\Adm\Http\Requests\FormSave;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;

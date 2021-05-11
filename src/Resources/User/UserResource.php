@@ -20,12 +20,11 @@ class UserResource extends BaseResource
     protected string $resourceModel = User::class;
 
     /**
-     * Отношения к профилю и файлам пользователя
+     * Отношения к профилю пользователя
      * @var string[]
      */
     protected array $relations = [
         'profile' => ProfileResource::class,
-//       'files' => UserFilesResource::class,
     ];
 
     /**
@@ -39,29 +38,14 @@ class UserResource extends BaseResource
     ];
 
     /**
-     * Скрытые поля
-     * @var string[]
-     */
-    protected array $hidden_fields = [
-        'email_verified_at',
-        'verify_token',
-        'remember_token',
-        'online_at',
-        'created_at',
-        'updated_at',
-        'two_factor_secret',
-        'current_team_id',
-        'profile_photo_path',
-        'two_factor_recovery_codes',
-    ];
-
-    /**
      * @param  string  $context
      * @return Resource
      */
     public function initResource(string $context = ''): Resource
     {
         $this->setTitle(trans('adm::resources.user.title'));
+        $this->setIcon('team');
+
         $this->setLabels([
             'email' => trans('adm::resources.user.forms.identity.fields.email'),
             'name' => trans('adm::resources.user.forms.identity.fields.name'),
@@ -69,7 +53,21 @@ class UserResource extends BaseResource
             'role' => trans('adm::resources.user.forms.identity.fields.role'),
             'password' => trans('adm::resources.user.forms.identity.fields.password'),
         ]);
-        $this->setIcon('team');
+
+        // Скрытые поля
+        $this->setHiddenFields([
+            'email_verified_at',
+            'verify_token',
+            'remember_token',
+            'online_at',
+            'created_at',
+            'updated_at',
+            'two_factor_secret',
+            'current_team_id',
+            'profile_photo_path',
+            'two_factor_recovery_codes',
+        ]);
+
         $this->setContext(__CLASS__);
 
         return $this;

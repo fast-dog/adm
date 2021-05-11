@@ -2,6 +2,8 @@
 
 namespace FastDog\Adm\Tests\Feature;
 
+use Carbon\Carbon;
+use FastDog\Adm\Models\Profile;
 use FastDog\Adm\Models\User;
 use FastDog\Adm\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -34,6 +36,12 @@ class FormTest extends TestCase
             'email' => 'adm@test.local',
         ]);
 
+        Profile::create([
+            'user_id' => $this->user->id,
+            'birthday' => Carbon::now()->format(Carbon::DEFAULT_TO_STRING_FORMAT),
+            'website' => 'example.com',
+        ]);
+
         Auth::login($this->user);
     }
 
@@ -57,6 +65,11 @@ class FormTest extends TestCase
                         ],
                     ],
                 ],
+                'values'=>[
+                    'id'=>'1',
+                    'name'=>'test',
+                    'website'=>'example.com'
+                ]
             ],
         ]);
     }
