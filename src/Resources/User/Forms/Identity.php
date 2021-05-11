@@ -21,21 +21,16 @@ class Identity extends BaseForms implements FormModelInterface
     /** @var User */
     private User $user;
 
-    /** @var Profile */
-    private Profile $profile;
-
     /**
      * Identity constructor.
      * @param  User  $model
      * @param  Profile  $profile
      */
-    public function __construct(User $model, Profile $profile)
+    public function __construct(User $model)
     {
         $this->setTitle(trans('adm::resources.user.forms.identity.title'));
         $this->setFormName('user/identity');
         $this->setModel($model);
-
-        $this->profile = $profile;
     }
 
     /**
@@ -44,13 +39,18 @@ class Identity extends BaseForms implements FormModelInterface
      */
     public function resourceFields(): array
     {
-        return array_merge(
-            [
-                Fieldset::make(trans('adm::resources.user.forms.identity.general'), 'general_fieldset')
-                    ->setItems($this->fields()),
-            ],
-            $this->profile->resourceFields()
-        );
+        $fields = parent::resourceFields();
+
+        $fieldset = new Fieldset();
+        $fieldset->setField('profile')->setName('Профиль пользователя');
+
+        $this->resource()->hasOne('profile', $fieldset);
+
+        return [
+            Fieldset::make(trans('adm::resources.user.forms.identity.general'), 'general_fieldset')
+                ->setItems($fields),
+            $fieldset,
+        ];
     }
 
     /**
