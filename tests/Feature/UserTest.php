@@ -3,6 +3,7 @@
 namespace FastDog\Adm\Tests\Feature;
 
 use Dg482\Red\Builders\Form\Fields\TableField;
+use Dg482\Red\Builders\Form\Structure\Fieldset;
 use FastDog\Adm\Models\User;
 use FastDog\Adm\Resources\User\UserResource;
 use FastDog\Adm\Tests\TestCase;
@@ -116,9 +117,12 @@ class UserTest extends TestCase
 
     public function testHasOneResourceField()
     {
-        $hasOneForm = $this->resource->hasOne('profile')->getForm();
+        $fieldset = (new Fieldset)->setField('profile')->setName('Профиль пользователя');
+
+        $hasOneForm = $this->resource->hasOne('profile', $fieldset)->getForm();
 
         $this->assertEquals('user/profile', $hasOneForm['form']);
+        $this->assertEquals('test', $hasOneForm['values']['username']);
     }
 
     public function testHasManyResourceField()

@@ -5,6 +5,7 @@ namespace FastDog\Adm\Models;
 use Dg482\Red\Builders\Form\Fields\Field;
 use Dg482\Red\Builders\Form\Fields\FileField;
 use Dg482\Red\Builders\Form\Fields\Values\StringValue;
+use Dg482\Red\Builders\Form\Structure\BaseStructure;
 use Dg482\Red\Exceptions\BadVariantKeyException;
 use Dg482\Red\Exceptions\EmptyFieldNameException;
 use Dg482\Red\Resource\RelationResource;
@@ -21,29 +22,41 @@ class BaseResource extends Resource
 {
     /**
      * @param  string  $relation
-     * @param  Field|null  $field
+     * @param  BaseStructure  $field
      * @return RelationResource
      * @throws BindingResolutionException
      */
-    public function hasOne(string $relation, Field &$field = null): RelationResource
+    public function hasOne(string $relation, BaseStructure &$field): RelationResource
     {
-        $model = $this->getModel()->{$relation};
+        $model = $this->getAdapter()->getModel();
+        $this->setModel($model);
 
+        $field->setField($relation.'@'.$field->getField());
+
+        $relationModel = $model->{$relation};
+
+        /** @var RelationResource $resource */
         $resource = (isset($this->relations[$relation]) && class_exists($this->relations[$relation])) ?
             app()->make($this->relations[$relation]) : app()->make(RelationResource::class);
 
         $resource->setContext($this->getContext());
-        if ($model) {
-            $resource->setRelation($relation);
+        if ($relationModel) {
+            $resource->setRelation($relationModel);
             $resource->setContext($this->getContext());
-            $resource->setModel($model);
-            $resource->getAdapter()->setModel($model);// set relation data in Adapter
-            $resource->getAdapter()->getCommand()->setResult($model->toAray() ?? []);
+            $resource->setModel($relationModel);
+
+            $resource->getAdapter()->setModel($relationModel);// set relation data in Adapter
+            $resource->getAdapter()->getCommand()->setResult((array) $relationModel ?? []);
 
             if (method_exists($field, 'setFieldRelation')) {
-                $field->setFieldRelation($this->getModel(), $model);// set relation data in Field
+                $field->setFieldRelation($this->getModel(), $relationModel);// set relation data in Field
             }
+
+            $field->setItems($resource->formModel->resourceFields());
         }
+        $this->getAdapter()->setModel($model);// set self Model
+
+        $this->setRelationInstance($relation, $resource);// set self relation instance
 
         return $resource;
     }
