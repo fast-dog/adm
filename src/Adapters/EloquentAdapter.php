@@ -40,6 +40,9 @@ class EloquentAdapter extends DBAdapter
 
     ];
 
+    /** @var array $with relations */
+    protected array $with = [];
+
     /**
      * EloquentAdapter constructor.
      * @param  Request  $request
@@ -196,7 +199,7 @@ class EloquentAdapter extends DBAdapter
         if (false === $cmd->isMultiple()) {
             $model = $this->model::where(function (Builder $query) {
                 $this->where($query);
-            })->first();
+            })->with($this->with())->first();
             if ($model) {
                 $this->setModel($model);
                 $result = $model->toArray();
@@ -205,7 +208,7 @@ class EloquentAdapter extends DBAdapter
         } else {
             $result = $this->model::where(function (Builder $query) {
                 $this->where($query);
-            })->paginate($cmd->getPerPage());
+            })->with($this->with())->paginate($cmd->getPerPage());
 //            $this->setModel($result);
             $cmd->setResult($result->items());
             $result = $result->toArray();
