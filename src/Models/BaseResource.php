@@ -21,12 +21,24 @@ use Illuminate\Support\Collection;
 class BaseResource extends Resource
 {
     /**
-     * @param  string  $relation
-     * @param  BaseStructure  $field
+     * Метод для реализации отображения отношения один к одному
+     *
+     * Если в качестве аргумента передано поле унаследованное от BaseStructure (элементы формы, fieldset, tabs/tab)
+     * будет вызван метод BaseStructure::setItems(), с установкой в нее формы ресурса отношения
+     *
+     * Если в качестве поля выступает стандартная реализация (текстовое поле, файл и тд)
+     * в данное поле будет установлено значение отношения
+     *
+     * @param  string  $relation наименование отношения определенное в базовом ресурсе
+     * @param  Field  $field поле формы принимающее в себя значение отношения для редактирования/отображения,
+     *  в случае BaseStructure  в нее будет передана форма ресурса
+     * @param  string  $relationField наименование поля в модели отношения
+     *
      * @return RelationResource
      * @throws BindingResolutionException
+     * @throws EmptyFieldNameException
      */
-    public function hasOne(string $relation, BaseStructure &$field): RelationResource
+    public function hasOne(string $relation, Field &$field, string $relationField = ''): RelationResource
     {
         $model = $this->getAdapter()->getModel();
         $this->setModel($model);
@@ -52,7 +64,13 @@ class BaseResource extends Resource
                 $field->setFieldRelation($this->getModel(), $relationModel);// set relation data in Field
             }
 
-            $field->setItems($resource->formModel->resourceFields());
+            if ($field instanceof BaseStructure) {
+                $field->setItems($resource->formModel->resourceFields());
+            } else {
+                if (!empty($relationField) && !empty($relationModel->{$relationField})) {
+                    $field->getValue()->push(new StringValue($relationModel->id, $relationModel->{$relationField}));
+                }
+            }
         }
         $this->getAdapter()->setModel($model);// set self Model
 
@@ -62,19 +80,22 @@ class BaseResource extends Resource
     }
 
     /**
-     * @param  string  $relation
-     * @param  Field|null  $field
+     * Метод для отображения отношения многие к одному
+     *
+     * @param  string  $relation наименование отношения определенное в базовом ресурсе
+     * @param  Field  $field поле формы принимающее в себя значение отношения для редактирования/отображения
      * @return RelationResource
      * @throws BadVariantKeyException
      * @throws BindingResolutionException
      * @throws EmptyFieldNameException
      * @throws Exception
      */
-    public function hasMany(string $relation, Field &$field = null): RelationResource
+    public function hasMany(string $relation, Field &$field): RelationResource
     {
         $model = $this->getAdapter()->getModel();
 
         $field->setField($relation.'@'.$field->getField());
+        $field->setMultiple(true);
 
         /** @var Collection $collection */
         $collection = $model->{$relation};// relation HasMany
