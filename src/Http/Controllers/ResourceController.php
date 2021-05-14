@@ -2,6 +2,7 @@
 
 namespace FastDog\Adm\Http\Controllers;
 
+use Dg482\Red\Commands\Crud\Command;
 use Dg482\Red\Commands\Crud\Create;
 use Dg482\Red\Commands\Crud\Delete;
 use Dg482\Red\Commands\Crud\Read;
@@ -85,7 +86,7 @@ class ResourceController extends BaseController
             $values = $resource->getFieldsValue(
                 array_merge($request->get('values', []), Arr::get($request->files->all(), 'values', []))
             );
-
+            /** @var Command $command */
             $command = $resource->getActionCommand($values);
             $command->setData($values);
             $resource->getAdapter()->setCommand($command);
