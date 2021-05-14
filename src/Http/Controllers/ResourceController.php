@@ -40,6 +40,8 @@ class ResourceController extends BaseController
                 'success' => true,
                 'table' => $resourceClass->getTable(),
             ];
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
         }
 
         return response()->json($result);
@@ -61,6 +63,8 @@ class ResourceController extends BaseController
                 'success' => true,
                 'form' => $resourceClass->getForm(),
             ];
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
         }
 
         return response()->json($result);
@@ -143,6 +147,8 @@ class ResourceController extends BaseController
             if ($result['success']) {
                 $result['form'] = $resource->getForm();
             }
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
         }
 
         return response()->json($result);
@@ -172,6 +178,8 @@ class ResourceController extends BaseController
                 'success' => true,
                 'table' => $resource->getTable(),// get new table
             ];
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
         }
 
         return response()->json($result);
@@ -201,6 +209,8 @@ class ResourceController extends BaseController
                 $storage->get($request->get('id'));
                 $storage->remove();
             }
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
         }
 
         return response()->json($result);
