@@ -66,7 +66,7 @@ class TableTest extends TestCase
 
         $adapter = $this->resource->getAdapter();
         $adapter->setModel((new User));
-        $adapter->setFilter(null);
+        $adapter->setFilters([]);
 
         $this->assertInstanceOf(User::class, $adapter->getModel());
 

@@ -91,7 +91,7 @@ class EloquentAdapter extends DBAdapter
         }
 
         if ($this->filter && $this->filter instanceof Closure) {
-            $this->getFilter()($query);
+            $this->getFilter()($query, app()->request->all());
         }
 
         return $query;
@@ -107,9 +107,7 @@ class EloquentAdapter extends DBAdapter
     {
         $result = [];// 1.0 result fields
 
-        /**
-         * @var EloquentModel $model
-         */
+        /**  @var EloquentModel $model */
         $model = $this->model; // 1.1 Eloquent Model
         $table = $model->getTable();// 1.2 get table name
 
@@ -142,12 +140,15 @@ class EloquentAdapter extends DBAdapter
     }
 
     /**
-     * @param  ?Closure  $filter
+     * @param  array  $filters
      * @return DBAdapter
      */
-    public function setFilter(?Closure $filter): DBAdapter
+    public function setFilters(array $filters): DBAdapter
     {
-        $this->filter = ($filter instanceof Closure) ? $filter : function () {
+        $this->filter = function (Builder $builder, array $request) use ($filters) {
+            return array_map(function (Closure $closure) use (&$builder, $request) {
+                return $closure($builder, $request);
+            }, $filters);
         };
 
         return $this;
