@@ -91,7 +91,7 @@ class EloquentAdapter extends DBAdapter
         }
 
         if ($this->filter && $this->filter instanceof Closure) {
-            $this->getFilter()($query, app()->request->all());
+            $this->getFilter()($query, json_decode(app()->request->input('filters', '{}'), true));
         }
 
         return $query;
