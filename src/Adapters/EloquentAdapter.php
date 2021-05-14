@@ -145,7 +145,7 @@ class EloquentAdapter extends DBAdapter
      */
     public function setFilters(array $filters): DBAdapter
     {
-        $this->filter = function (Builder $builder, array $request) use ($filters) {
+        $this->filter = function (Builder &$builder, array $request) use ($filters) {
             return array_map(function (Closure $closure) use (&$builder, $request) {
                 return $closure($builder, $request);
             }, $filters);
