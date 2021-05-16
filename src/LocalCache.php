@@ -26,7 +26,8 @@ class LocalCache
     {
         if (self::ENABLE) {
             $key .= '-'.config('app.env');
-            (config('cache.default') === 'redis') ? Cache::tags($tags)->put($key, $values, config('adm.resource_ttl', 60)) :
+            (config('cache.default') === 'redis') ?
+                Cache::tags($tags)->put($key, $values, config('adm.resource_ttl', 60)) :
                 Cache::put($key, $values, config('adm.resource_ttl', 60));
         }
     }
