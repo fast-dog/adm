@@ -207,8 +207,29 @@ class ResourceController extends BaseController
         if ($resource = $this->getResource($request->get('alias', ''))) {
             if ($storage = $resource->getAssets()) {
                 $storage->get($request->get('id'));
-                $storage->remove();
+                $result['success'] = $storage->remove();
             }
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * @param  Request  $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function fields(Request $request): JsonResponse
+    {
+        $result = [
+            'success' => false,
+            'items' => [],
+        ];
+
+        if ($resource = $this->getResource($request->get('alias', ''))) {
+            $result['items'] = $resource->getFormModel()->resourceFields();
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
         }
