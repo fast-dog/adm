@@ -53,6 +53,7 @@
     "test": "vendor/bin/phpunit",
     "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
     "post-root-package-install": [
+      "@php artisan vendor:publish --provider=\"Spatie\\Permission\\PermissionServiceProvider\"",
       "@php artisan vendor:publish --provider=\"Tymon\\JWTAuth\\Providers\\LaravelServiceProvider\"",
       "@php artisan jwt:secret"
     ]

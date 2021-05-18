@@ -35,4 +35,7 @@ Route::group([
     Route::delete('/resource/assets', [ResourceController::class, 'resourceAssetsDelete']);
 
     Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
+
+    Route::get('/resource/fields', [ResourceController::class, 'fields']);
+
 });
