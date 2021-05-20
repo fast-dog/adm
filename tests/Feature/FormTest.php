@@ -49,7 +49,7 @@ class FormTest extends TestCase
     public function testForm()
     {
         $response = $this->get('/api/resource/form?alias=user&id='.$this->user->id);
-
+var_dump($response->content());
         $response->assertStatus(200);
 
         $response->assertJson([

@@ -53,7 +53,7 @@ class AdmServiceProvider extends LaravelServiceProvider
 //        $this->commands([
 //
 //        ]);
-
+        /** @var EloquentAdapter $adapter */
         $adapter = app()->make(EloquentAdapter::class);
 
         // 1.1 register singleton db adapter
