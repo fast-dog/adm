@@ -24,7 +24,6 @@ class Identity extends BaseForms implements FormModelInterface
     /**
      * Identity constructor.
      * @param  User  $model
-     * @param  Profile  $profile
      */
     public function __construct(User $model)
     {

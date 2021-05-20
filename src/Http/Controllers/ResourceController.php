@@ -24,6 +24,14 @@ use Dg482\Red\Resource\Resource;
  */
 class ResourceController extends BaseController
 {
+    /** @var Resource|null */
+    protected ?Resource $resource;
+
+    public function __construct(Request $request)
+    {
+        $this->resource = $this->getResource($request->get('alias', ''));
+    }
+
     /**
      * @param  Request  $request
      * @return JsonResponse
@@ -35,10 +43,10 @@ class ResourceController extends BaseController
             'success' => false,
         ];
 
-        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
+        if ($this->resource) {
             $result = [
                 'success' => true,
-                'table' => $resourceClass->getTable(),
+                'table' => $this->resource->getTable(),
             ];
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
@@ -58,10 +66,10 @@ class ResourceController extends BaseController
             'success' => false,
         ];
 
-        if ($resourceClass = $this->getResource($request->get('alias', ''))) {
+        if ($this->resource) {
             $result = [
                 'success' => true,
-                'form' => $resourceClass->getForm(),
+                'form' => $this->resource->getForm(),
             ];
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
@@ -81,19 +89,18 @@ class ResourceController extends BaseController
             'success' => true,
             'form' => [],
         ];
-        /** @var Resource $resource */
-        $resource = $request->getResource();
 
-        if ($resource) {
+
+        if ($this->resource) {
             $formBackend = $request->getFormBackend();
             // get field specific value (field logic execution)
-            $values = $resource->getFieldsValue(
+            $values = $this->resource->getFieldsValue(
                 array_merge($request->get('values', []), Arr::get($request->files->all(), 'values', []))
             );
             /** @var Command $command */
-            $command = $resource->getActionCommand($values);
+            $command = $this->resource->getActionCommand($values);
             $command->setData($values);
-            $resource->getAdapter()->setCommand($command);
+            $this->resource->getAdapter()->setCommand($command);
             $method = 'execute';
             if ($command instanceof Create) {
                 $method = 'write';
@@ -101,12 +108,12 @@ class ResourceController extends BaseController
                 $method = 'update';
             }
 
-            DB::transaction(function () use ($resource, &$result, $values, $method) {
-                $result['success'] = $resource->getAdapter()->{$method}();// write new model
+            DB::transaction(function () use (&$result, $values, $method) {
+                $result['success'] = $this->resource->getAdapter()->{$method}();// write new model
                 // exist relations
-                if (!empty($resource->getRelations())) {
-                    $model = $resource->getAdapter()->getCommand()->getModel();
-                    foreach ($resource->getRelations() as $idx => $relation) {
+                if (!empty($this->resource->getRelations())) {
+                    $model = $this->resource->getAdapter()->getCommand()->getModel();
+                    foreach ($this->resource->getRelations() as $idx => $relation) {
                         $relationValues = [];
                         foreach ($values as $name => $value) {
                             if (strpos($name, $idx.'@') !== false && !empty($value)) {
@@ -118,26 +125,26 @@ class ResourceController extends BaseController
                             foreach ($relationValues as $relation => $values) {
                                 $values[$model->getTable().'_id'] = $model->id;// set {owner_table}_id
                                 /** @var Resource $relationInstance relation resource */
-                                $relationInstance = $resource->getRelationInstance($relation);
+                                $relationInstance = $this->resource->getRelationInstance($relation);
                                 if (null === $relationInstance) {
-                                    $resource->setRelationInstance($relation, app()->make(
-                                        $resource->getRelations()[$relation]
+                                    $this->resource->setRelationInstance($relation, app()->make(
+                                        $this->resource->getRelations()[$relation]
                                     ));
-                                    $relationInstance = $resource->getRelationInstance($relation);
+                                    $relationInstance = $this->resource->getRelationInstance($relation);
                                 }
 
                                 // set relation model
-                                $resource->getAdapter()->setModel($relationInstance->getModel());
+                                $this->resource->getAdapter()->setModel($relationInstance->getModel());
                                 // get specific fields value (field logic execution)
                                 $values = $relationInstance->getFieldsValue($values);
 
                                 // update cmd data
-                                $cmd = $resource->getAdapter()->getCommand();
+                                $cmd = $this->resource->getAdapter()->getCommand();
                                 if (method_exists($cmd, 'setData')) {
                                     $cmd->setData($values);
                                 }
                                 // write or update relation model
-                                $resource->getAdapter()->{$method}();
+                                $this->resource->getAdapter()->{$method}();
                             }
                         }
                     }
@@ -145,7 +152,7 @@ class ResourceController extends BaseController
             });
 
             if ($result['success']) {
-                $result['form'] = $resource->getForm();
+                $result['form'] = $this->resource->getForm();
             }
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
@@ -165,18 +172,18 @@ class ResourceController extends BaseController
             'success' => false,
         ];
 
-        if ($resource = $this->getResource($request->get('alias', ''))) {
-            $resource->getAdapter()->read();// read model
+        if ($this->resource) {
+            $this->resource->getAdapter()->read();// read model
 
-            $resource->getAdapter()->setCommand((new Delete));// set delete cmd
-            $resource->getAdapter()->delete();// execute delete method
+            $this->resource->getAdapter()->setCommand((new Delete));// set delete cmd
+            $this->resource->getAdapter()->delete();// execute delete method
 
             app()->request->merge(['id' => -1]);// reset id model
 
-            $resource->getAdapter()->setCommand((new Read));// new read cmd
+            $this->resource->getAdapter()->setCommand((new Read));// new read cmd
             $result = [
                 'success' => true,
-                'table' => $resource->getTable(),// get new table
+                'table' => $this->resource->getTable(),// get new table
             ];
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
@@ -189,7 +196,7 @@ class ResourceController extends BaseController
      * @param  string  $alias
      * @return Resource|null
      */
-    protected function getResource(string $alias): ?Resource
+    private function getResource(string $alias): ?Resource
     {
         return (!empty($alias)) ? app()->get(Str::studly($alias).'Resource') : null;
     }
@@ -204,8 +211,8 @@ class ResourceController extends BaseController
             'success' => false,
         ];
 
-        if ($resource = $this->getResource($request->get('alias', ''))) {
-            if ($storage = $resource->getAssets()) {
+        if ($this->resource) {
+            if ($storage = $this->resource->getAssets()) {
                 $storage->get($request->get('id'));
                 $result['success'] = $storage->remove();
             }

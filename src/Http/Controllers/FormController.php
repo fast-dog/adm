@@ -12,6 +12,14 @@ use Illuminate\Http\Request;
  */
 class FormController extends ResourceController
 {
+    /**
+     * FormController constructor.
+     * @param  Request  $request
+     */
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+    }
 
     /**
      * @param  Request  $request
@@ -25,8 +33,8 @@ class FormController extends ResourceController
             'items' => [],
         ];
 
-        if ($resource = $this->getResource($request->get('alias', ''))) {
-            $result['items'] = $resource->getFormModel()->resourceFields();
+        if ($this->resource) {
+            $result['items'] = $this->resource->getFormModel()->resourceFields();
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
         }
@@ -43,6 +51,7 @@ class FormController extends ResourceController
             'success' => false,
             'items' => [],
         ];
+
 
         return response()->json($result);
     }
