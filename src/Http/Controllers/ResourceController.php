@@ -89,7 +89,8 @@ class ResourceController extends BaseController
             'success' => true,
             'form' => [],
         ];
-
+        /** @var Resource $resource */
+        $this->resource = $request->getResource();
 
         if ($this->resource) {
             $formBackend = $request->getFormBackend();
