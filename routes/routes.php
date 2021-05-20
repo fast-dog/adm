@@ -1,6 +1,7 @@
 <?php
 
 use FastDog\Adm\Http\Controllers\AdminController;
+use FastDog\Adm\Http\Controllers\FormController;
 use FastDog\Adm\Http\Controllers\NavController;
 use FastDog\Adm\Http\Controllers\ResourceController;
 use FastDog\Adm\Http\Controllers\SwitchActionController;
@@ -36,6 +37,6 @@ Route::group([
 
     Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
 
-    Route::get('/resource/fields', [ResourceController::class, 'fields']);
+    Route::get('/resource/fields', [FormController::class, 'fields']);
 
 });

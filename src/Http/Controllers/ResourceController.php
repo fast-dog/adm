@@ -189,7 +189,7 @@ class ResourceController extends BaseController
      * @param  string  $alias
      * @return Resource|null
      */
-    private function getResource(string $alias): ?Resource
+    protected function getResource(string $alias): ?Resource
     {
         return (!empty($alias)) ? app()->get(Str::studly($alias).'Resource') : null;
     }
@@ -209,27 +209,6 @@ class ResourceController extends BaseController
                 $storage->get($request->get('id'));
                 $result['success'] = $storage->remove();
             }
-        } else {
-            $result['error'] = 'Resource not defined or empty alias.';
-        }
-
-        return response()->json($result);
-    }
-
-    /**
-     * @param  Request  $request
-     * @return JsonResponse
-     * @throws Exception
-     */
-    public function fields(Request $request): JsonResponse
-    {
-        $result = [
-            'success' => false,
-            'items' => [],
-        ];
-
-        if ($resource = $this->getResource($request->get('alias', ''))) {
-            $result['items'] = $resource->getFormModel()->resourceFields();
         } else {
             $result['error'] = 'Resource not defined or empty alias.';
         }
