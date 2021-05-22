@@ -3,6 +3,7 @@
 namespace FastDog\Adm\Http\Controllers;
 
 use Exception;
+use FastDog\Adm\Models\FormStructure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -43,14 +44,23 @@ class FormController extends ResourceController
     }
 
     /**
+     * @param  Request  $request
      * @return JsonResponse
+     * @throws Exception
      */
-    public function getFormStructure(): JsonResponse
+    public function getFormStructure(Request $request): JsonResponse
     {
         $result = [
             'success' => false,
             'items' => [],
         ];
+
+        if ($this->resource) {
+            $result['items'] = (new FormStructure)->getResourceStructure($request->get('alias', ''));
+            $result['success'] = true;
+        } else {
+            $result['error'] = 'Resource not defined or empty alias.';
+        }
 
 
         return response()->json($result);

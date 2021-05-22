@@ -37,6 +37,6 @@ Route::group([
 
     Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
 
-    Route::get('/resource/fields', [FormController::class, 'fields']);
+    Route::get('/resource/fields', [FormController::class, 'getFormStructure']);
 
 });
