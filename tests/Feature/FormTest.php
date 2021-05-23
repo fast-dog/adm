@@ -150,4 +150,11 @@ class FormTest extends TestCase
             'success' => true,
         ]);
     }
+
+    public function testActionForm()
+    {
+        $response = $this->post('/api/resource/action?alias=user');
+
+        $response->assertStatus(200);
+    }
 }
