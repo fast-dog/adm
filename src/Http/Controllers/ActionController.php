@@ -21,9 +21,9 @@ class ActionController extends ResourceController
         $result = [
             'success' => false,
         ];
+        $event = new RunAction($result, $this->resource);
+        event($event);
 
-        event(new RunAction($result, $this->resource));
-
-        return response()->json($result);
+        return response()->json($event->getResult());
     }
 }
