@@ -1,5 +1,6 @@
 <?php
 
+use FastDog\Adm\Http\Controllers\ActionController;
 use FastDog\Adm\Http\Controllers\AdminController;
 use FastDog\Adm\Http\Controllers\FormController;
 use FastDog\Adm\Http\Controllers\NavController;
@@ -35,6 +36,7 @@ Route::group([
     Route::delete('/resource', [ResourceController::class, 'resourceDelete']);
     Route::delete('/resource/assets', [ResourceController::class, 'resourceAssetsDelete']);
 
+    Route::post('/resource/action', [ActionController::class, 'run']);
     Route::post('/resource/switch-action', [SwitchActionController::class, 'run']);
 
     Route::get('/resource/fields', [FormController::class, 'getFormStructure']);
