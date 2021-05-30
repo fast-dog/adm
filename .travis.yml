@@ -14,6 +14,6 @@ script:
   - vendor/bin/phpcs -p --standard=psr2 ./src
   - vendor/bin/phpcs -p --standard=psr2 ./tests
   - vendor/bin/phpunit --coverage-clover coverage.xml
-  - ./infection.phar --min-msi=48 --threads=4
+  - ./infection.phar --min-msi=25 --threads=4
 after_success:
   - bash <(curl -s https://codecov.io/bash)
