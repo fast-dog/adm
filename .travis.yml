@@ -6,11 +6,16 @@ php:
 before_script:
   - composer install
   - composer dump-autoload
+  - wget https://github.com/infection/infection/releases/download/0.23.0/infection.phar
+  - wget https://github.com/infection/infection/releases/download/0.23.0/infection.phar.asc
+  - gpg --recv-keys C6D76C329EBADE2FB9C458CFC5095986493B4AA0
+  - gpg --with-fingerprint --verify infection.phar.asc infection.phar
+  - chmod +x infection.phar
 
 script:
   - vendor/bin/phpcs -p --standard=psr2 ./src
   - vendor/bin/phpcs -p --standard=psr2 ./tests
   - vendor/bin/phpunit --coverage-clover coverage.xml
-
+  - ./infection.phar --min-msi=48 --threads=4
 after_success:
   - bash <(curl -s https://codecov.io/bash)
