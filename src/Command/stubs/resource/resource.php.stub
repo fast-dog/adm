@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Resource\{Resource};
+
+use Dg482\Red\Builders\Form\BaseForms;
+use Dg482\Red\Resource\Resource;
+use FastDog\Adm\Models\BaseResource;
+use App\Resource\{Resource}\{Resource}Form;
+
+/**
+ * Class UserResource
+ * @package App\Resources
+ */
+class UserResource extends BaseResource
+{
+    /**
+     * Resource model
+     * @var string $resourceModel
+     */
+    protected string $resourceModel = {Resource}::class;
+
+    /**
+     * Resource model relations
+     * @var string[]
+     */
+    protected array $relations = [];
+
+    /**
+     * Validation rules
+     * @var array $validators
+     */
+    protected array $validators = [
+        'id' => ['required'],
+    ];
+
+    /**
+     * Init resource method
+     * Setup icon, title and labels for resource form and tables
+     *
+     * @param  string  $context
+     * @return Resource
+     */
+    public function initResource(string $context = ''): Resource
+    {
+        $this->setIcon('gear');
+
+        $this->setTitle('Resource {Resource}');
+
+        $this->setLabels([
+            'id' => 'Id',
+        ]);
+
+        $this->setHiddenFields([
+            'created_at', 'updated_at',
+        ]);
+
+        $this->setContext(__CLASS__);
+
+        return $this;
+     }
+
+    /**
+     * Return form model
+     * @return BaseForms
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getFormModel(): BaseForms
+    {
+        if (!$this->formModel) {
+            $this->setForm(app()->make({Resource}::class));
+        }
+
+        return parent::getFormModel();
+    }
+}

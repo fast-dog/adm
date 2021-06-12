@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Resource\{Resource}\Forms;
+
+use Dg482\Red\Builders\Form\BaseForms;
+use Dg482\Red\Builders\Form\FormModelInterface;
+
+/**
+ * Class {Resource}Form
+ */
+class {Resource}Form extends BaseForms implements FormModelInterface
+{
+    /**
+     * Identity constructor.
+     * @param  {Resource}  $model
+     */
+    public function __construct({Resource} $model)
+    {
+        $this->setTitle('set title');
+        $this->setFormName('form/{resource}');
+        $this->setModel($model);
+    }
+
+     /**
+      * @return array
+      * @throws Exception
+      */
+     public function resourceFields(): array
+     {
+         return [
+             (new Fieldset)->setItems(parent::resourceFields()),
+         ];
+     }
+}
