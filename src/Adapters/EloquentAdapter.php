@@ -121,6 +121,7 @@ class EloquentAdapter extends DBAdapter
                 $result[$column] = [
                     'id' => $column,
                     'table' => $table,
+                    'comment' => $builder->getConnection()->getDoctrineColumn($table, $column)->getComment(),
                     'type' => 'AdmField'.Str::ucfirst($builder->getColumnType($table, $column)),// 1.4 get column type
                 ];
             }
@@ -179,6 +180,10 @@ class EloquentAdapter extends DBAdapter
 
         if (!empty($result[$field->getField()])) {
             $field->setValue($result[$field->getField()]);// 1.4 set Field value
+        }
+
+        if (!empty($columnMeta['comment'])) {// 1.5 set field name from db column comment
+            $field->setName($columnMeta['comment']);
         }
 
         return $field;

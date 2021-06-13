@@ -65,11 +65,11 @@ class FormTest extends TestCase
                         ],
                     ],
                 ],
-                'values'=>[
-                    'id'=>'1',
-                    'name'=>'test',
-                    'website'=>'example.com'
-                ]
+                'values' => [
+                    'id' => '1',
+                    'name' => 'test',
+                    'website' => 'example.com',
+                ],
             ],
         ]);
     }
@@ -130,13 +130,30 @@ class FormTest extends TestCase
         $response->assertStatus(200);
     }
 
-
     public function testDeleteResourceAssets()
     {
         $response = $this->json('DELETE', '/api/resource/assets', [
             'alias' => 'user',
             'id' => 1,
         ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function testFormStructureFields()
+    {
+        $response = $this->get('/api/resource/fields?alias=user');
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'success' => true,
+        ]);
+    }
+
+    public function testActionForm()
+    {
+        $response = $this->post('/api/resource/action?alias=user');
 
         $response->assertStatus(200);
     }

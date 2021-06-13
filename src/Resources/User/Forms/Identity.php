@@ -6,8 +6,8 @@ use Dg482\Red\Builders\Form\BaseForms;
 use Dg482\Red\Builders\Form\Fields\Field;
 use Dg482\Red\Builders\Form\Fields\PasswordField;
 use Dg482\Red\Builders\Form\Fields\Values\StringValue;
-use Dg482\Red\Builders\Form\FormModelInterface;
 use Dg482\Red\Builders\Form\Structure\Fieldset;
+use Dg482\Red\Interfaces\FormModelInterface;
 use Exception;
 use FastDog\Adm\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +24,6 @@ class Identity extends BaseForms implements FormModelInterface
     /**
      * Identity constructor.
      * @param  User  $model
-     * @param  Profile  $profile
      */
     public function __construct(User $model)
     {
